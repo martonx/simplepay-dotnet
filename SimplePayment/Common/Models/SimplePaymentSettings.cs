@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SimplePayment.Net
+namespace SimplePayment.Common.Models
 {
-    public interface ISimplePaymentService
+    public class SimplePaymentSettings
     {
     }
 }

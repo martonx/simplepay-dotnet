@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SimplePayment.Net.Common.Enums
+namespace SimplePayment.Common.Enums
 {
     public enum PaymentStatus
     {

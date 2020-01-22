@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text;
 
-namespace SimplePayment.Net.Helpers
+namespace SimplePayment.Helpers
 {
     public class SimplePaymentClient
     {

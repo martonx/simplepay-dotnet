@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SimplePayment.Net.Common.Models
+namespace SimplePayment.Common.Models
 {
-    public class OrderDetails
+    public class IPNModel
     {
     }
 }

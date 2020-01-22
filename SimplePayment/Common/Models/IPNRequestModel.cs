@@ -1,4 +1,4 @@
-﻿namespace SimplePayment.Net.Common.Models
+﻿namespace SimplePayment.Common.Models
 {
     public class IPNRequestModel : IPNModel
     {

@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29424.173
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimplePayment.Net", "SimplePayment.Net\SimplePayment.Net.csproj", "{711BF68B-2056-4270-8961-3E08FAA77276}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimplePayment", "SimplePayment\SimplePayment.csproj", "{711BF68B-2056-4270-8961-3E08FAA77276}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePayment.Test", "SimplePayment.Test\SimplePayment.Test.csproj", "{2375CA9D-4B46-410F-A7E2-24046B440DB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimplePayment.Test", "SimplePayment.Test\SimplePayment.Test.csproj", "{2375CA9D-4B46-410F-A7E2-24046B440DB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SimplePayment.IntegrationTest", "SimplePayment.IntegrationTest\SimplePayment.IntegrationTest.csproj", "{E95BF5EF-B2EF-4562-9EA9-1E97375AE096}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SimplePayment.IntegrationTest", "SimplePayment.IntegrationTest\SimplePayment.IntegrationTest.csproj", "{E95BF5EF-B2EF-4562-9EA9-1E97375AE096}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

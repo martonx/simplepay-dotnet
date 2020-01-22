@@ -1,7 +1,7 @@
-﻿using SimplePayment.Net.Common.Models;
-using SimplePayment.Net.Helpers;
+﻿using SimplePayment.Common.Models;
+using SimplePayment.Helpers;
 
-namespace SimplePayment.Net
+namespace SimplePayment
 {
     public class SimplePaymentService : ISimplePaymentService
     {

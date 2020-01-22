@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SimplePayment.Net.Common.Enums
+namespace SimplePayment.Common.Models
 {
-    public enum OrderStatus
+    public class OrderDetails
     {
     }
 }

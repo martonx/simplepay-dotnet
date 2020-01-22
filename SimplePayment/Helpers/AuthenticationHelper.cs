@@ -1,4 +1,4 @@
-﻿namespace SimplePayment.Net.Helpers
+﻿namespace SimplePayment.Helpers
 {
     public class AuthenticationHelper
     {
