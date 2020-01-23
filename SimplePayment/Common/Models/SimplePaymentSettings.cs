@@ -6,5 +6,7 @@ namespace SimplePayment.Common.Models
 {
     public class SimplePaymentSettings
     {
+        public string Merchant { get; set; }
+        public string SecretKey { get; set; }
     }
 }
