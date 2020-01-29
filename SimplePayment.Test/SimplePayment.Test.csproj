@@ -13,7 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SimplePayment.Net\SimplePayment.Net.csproj" />
+    <ProjectReference Include="..\SimplePayment\SimplePayment.csproj" />
   </ItemGroup>
 
 </Project>
