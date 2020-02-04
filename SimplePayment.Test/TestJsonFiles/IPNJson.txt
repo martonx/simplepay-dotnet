@@ -1,0 +1,10 @@
+﻿{
+"salt":"223G0O18VAqdLhQYbJz73adT36YzLtak",
+"orderRef":"101010515363456734591",
+"method":"CARD",
+"merchant":"PUBLICTESTHUF",
+"finishDate":"2018-09-07T20:46:18+0200",
+"paymentDate":"2018-09-07T20:41:13+0200",
+"transactionId":99310118,
+"status":"FINISHED"
+}

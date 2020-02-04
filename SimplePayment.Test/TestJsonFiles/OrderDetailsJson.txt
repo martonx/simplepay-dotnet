@@ -1,0 +1,49 @@
+﻿{
+ "merchant":"PUBLICTESTHUF",
+ "orderRef":"101010515363456734591",
+ "customer":"v2 START Tester",
+ "customerEmail":"sdk_test@otpmobil.com",
+ "language":"HU",
+ "currency":"HUF",
+ "total":"100",
+ "twoStep":true,
+ "salt":"d471d2fb24c5a395563ff60f8ba769d1",
+ "methods":[
+ "CARD"
+ ],
+ "invoice":{
+"Name" : "Teszt Béla", 
+"Company" : "Teszt Kft.", 
+"Country" : "Magyarország", 
+"City" : "Szeged", 
+"State" : "Csongrád", 
+"Zip" : "6722", 
+"Address" : "Teszt utca 7.", 
+"Address2" : "2 / 3", 
+"Phone":"36701234567"
+ },
+ "delivery":{
+"Name" : "Teszt Béla", 
+"Company" : "Teszt Kft.", 
+"Country" : "Magyarország", 
+"City" : "Szeged", 
+"State" : "Csongrád", 
+"Zip" : "6722", 
+"Address" : "Teszt utca 7.", 
+"Address2" : "2 / 3", 
+"Phone":"36701234567"
+ },
+ "timeout":"2018-09-07T20:51:13+00:00",
+ "url":"http://simplepaytestshop.hu/back.php",
+ "sdkVersion":"SimplePay_PHP_SDK_2.0_180906",
+ "orderItems": [
+    {
+        "ref": "Nagy Usa Körút",
+        "title": "szép út",
+        "description": "nagyon szép",
+        "amount": "1",
+        "price": "959000",
+        "tax": "210000"
+    }
+ ]
+}
