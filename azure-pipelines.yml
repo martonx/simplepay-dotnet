@@ -23,7 +23,7 @@ steps:
   displayName: 'Build the project'
   inputs:
     command: 'build'
-    configuration: 'Release'
+    arguments: '--configuration Release'
 
 - task: DotNetCoreCLI@2
   inputs:
