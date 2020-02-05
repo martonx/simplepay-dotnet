@@ -30,11 +30,13 @@ steps:
     command: 'test'
     nobuild: true
 
-- task: NuGetCommand@2
+- task: DotNetCoreCLI@2
   inputs:
     command: 'pack'
+    configuration: 'Release'
     packagesToPack: 'SimplePayment/SimplePayment.csproj'
     versioningScheme: 'byPrereleaseNumber'
+    nobuild: true
     majorVersion: '1'
     minorVersion: '0'
     patchVersion: '0'
