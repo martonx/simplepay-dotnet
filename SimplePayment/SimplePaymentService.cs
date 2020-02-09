@@ -17,7 +17,22 @@ namespace SimplePayment
             _simplePaymentClient = new SimplePaymentClient(new HttpClient());
         }
 
-        public StartTransactionResponse StartTransaction(OrderDetails orderDetails)
+        public StartTransactionResponse StartTransaction(OrderDetails orderDetails, bool isTwoStep = false)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public OrderResponse HandlePaymentResponse(PaymentResponse paymentResponse)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public OrderResponse HandleIPNResponse(OrderResponse paymentResponse, IPNModel ipnResponse)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public OrderResponse FinishTwoStepTransaction(FinishRequest finishRequest, OrderResponse orderResponse)
         {
             throw new System.NotImplementedException();
         }
