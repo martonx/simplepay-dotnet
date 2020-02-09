@@ -1,4 +1,7 @@
-﻿using SimplePayment.Common.Models;
+﻿using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using SimplePayment.Common.Models;
 using SimplePayment.Helpers;
 
 namespace SimplePayment
@@ -11,7 +14,12 @@ namespace SimplePayment
         public SimplePaymentService(SimplePaymentSettings simplePaymentSettings)
         {
             _simplePaymentSettings = simplePaymentSettings;
-            _simplePaymentClient = new SimplePaymentClient();
+            _simplePaymentClient = new SimplePaymentClient(new HttpClient());
+        }
+
+        public StartTransactionResponse StartTransaction(OrderDetails orderDetails)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

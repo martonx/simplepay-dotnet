@@ -1,10 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using SimplePayment.Common.Models;
 
 namespace SimplePayment
 {
     public interface ISimplePaymentService
     {
+        StartTransactionResponse StartTransaction(OrderDetails orderDetails);
     }
 }
