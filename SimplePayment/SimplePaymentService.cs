@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using SimplePayment.Common.Models;
@@ -14,12 +15,13 @@ namespace SimplePayment
         public SimplePaymentService(SimplePaymentSettings simplePaymentSettings)
         {
             _simplePaymentSettings = simplePaymentSettings;
-            _simplePaymentClient = new SimplePaymentClient(new HttpClient());
+            _simplePaymentClient = new SimplePaymentClient(new HttpClient(),_simplePaymentSettings);
         }
 
         public StartTransactionResponse StartTransaction(OrderDetails orderDetails, bool isTwoStep = false)
         {
-            throw new System.NotImplementedException();
+            //await _simplePaymentClient.PostAsync<TransactionResponse, OrderDetails>(orderDetails, _simplePaymentClient);
+            throw new NotImplementedException();
         }
 
         public OrderResponse HandlePaymentResponse(PaymentResponse paymentResponse)
@@ -35,6 +37,11 @@ namespace SimplePayment
         public OrderResponse FinishTwoStepTransaction(FinishRequest finishRequest, OrderResponse orderResponse)
         {
             throw new System.NotImplementedException();
+        }
+
+        private void ValidateOrderDetailsModel()
+        {
+
         }
     }
 }

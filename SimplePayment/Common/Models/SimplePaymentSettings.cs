@@ -8,5 +8,6 @@ namespace SimplePayment.Common.Models
     {
         public string Merchant { get; set; }
         public string SecretKey { get; set; }
+        public bool IsTestEnvironment { get; set; }
     }
 }
