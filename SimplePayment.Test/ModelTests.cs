@@ -42,7 +42,7 @@ namespace SimplePayment.Test
             Assert.AreEqual(IPN.FinishDate, DateTime.Parse("2018-09-07T20:46:18+0200"));
             Assert.AreEqual(IPN.PaymentDate, DateTime.Parse("2018-09-07T20:41:13+0200"));
             Assert.AreEqual(IPN.TransactionId, 99310118);
-            Assert.AreEqual(IPN.Status, PaymentStatus.Finished.ToString().ToUpper());
+            Assert.AreEqual(IPN.Status, PaymentStatus.Finished);
 
         }
 
@@ -69,7 +69,6 @@ namespace SimplePayment.Test
 
             Assert.AreEqual(orderDetails.Merchant, "PUBLICTESTHUF");
             Assert.AreEqual(orderDetails.OrderRef, "101010515363456734591");
-            Assert.AreEqual(orderDetails.Customer, "v2 START Tester");
             Assert.AreEqual(orderDetails.CustomerEmail, "sdk_test@otpmobil.com");
             Assert.AreEqual(orderDetails.Language, "HU");
             Assert.AreEqual(orderDetails.Currency, Currency.HUF);
@@ -78,7 +77,6 @@ namespace SimplePayment.Test
             Assert.AreEqual(orderDetails.Salt, "d471d2fb24c5a395563ff60f8ba769d1");
             Assert.AreEqual(orderDetails.Methods[0], "CARD");
             Assert.AreEqual(orderDetails.Invoice.ToString(), JsonSerializer.Deserialize<BillingDetails>(ReadJson("BillingDetails")).ToString());
-            Assert.AreEqual(orderDetails.Delivery.ToString(), JsonSerializer.Deserialize<BillingDetails>(ReadJson("BillingDetails")).ToString()); // It has equal properties as BillingDetails
             Assert.AreEqual(orderDetails.TimeOut, DateTime.Parse("2018-09-07T20:51:13+00:00"));
             Assert.AreEqual(orderDetails.Url, "http://simplepaytestshop.hu/back.php");
             Assert.AreEqual(orderDetails.SDKVersion, "SimplePay_PHP_SDK_2.0_180906");

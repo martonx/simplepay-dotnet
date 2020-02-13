@@ -2,14 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-  </PropertyGroup>
   <PackageId>SimplePayment</PackageId>
   <Version>0.1.0</Version>
   <Authors>Lajos Marton, Adorjan Sari</Authors>
   <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
-
+  </PropertyGroup>
   <ItemGroup>
-    <None Include="licenses\License.txt" Pack="true" PackagePath="LICENSE.txt" />
+    <None Include="licenses\LICENSE.txt" Pack="true" PackagePath="LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
