@@ -1,0 +1,43 @@
+trigger:
+  branches:
+    include:
+      - '*'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core sdk'
+    inputs:
+      packageType: sdk
+      version: 3.1.100
+      installationPath: $(Agent.ToolsDirectory)/dotnet
+
+  - task: DotNetCoreCLI@2
+    displayName: 'Build the project'
+    inputs:
+      command: 'build'
+      arguments: '--configuration Release'
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'test'
+      nobuild: true
+
+  - task: DotNetCoreCLI@2
+    inputs:
+      command: 'pack'
+      configuration: 'Release'
+      packagesToPack: 'SimplePayment/SimplePayment.csproj'
+      versioningScheme: 'byPrereleaseNumber'
+      nobuild: true
+      majorVersion: '1'
+      minorVersion: '0'
+      patchVersion: '0'
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+      ArtifactName: 'drop'
+      publishLocation: 'Container'
