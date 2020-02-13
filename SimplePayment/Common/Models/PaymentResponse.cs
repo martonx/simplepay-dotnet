@@ -1,21 +1,18 @@
-﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using JsonName = System.Text.Json.Serialization.JsonPropertyNameAttribute;
 
 namespace SimplePayment.Common.Models
 {
     public class PaymentResponse
     {
-        [JsonProperty("r")]
-        public string ResponseCode { get; set; }
-        [JsonProperty("t")]
+        [JsonName("r")]
+        public int ResponseCode { get; set; }
+        [JsonName("t")]
         public string TransactionId { get; set; }
-        [JsonProperty("e")]
+        [JsonName("e")]
         public string Event { get; set; }
-        [JsonProperty("m")]
+        [JsonName("m")]
         public string Merchant { get; set; }
-        [JsonProperty("o")]
+        [JsonName("o")]
         public string OrderId { get; set; }
     }
 }
