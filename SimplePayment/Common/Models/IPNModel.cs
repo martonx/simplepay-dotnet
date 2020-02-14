@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SimplePayment.Common.Models
 {
@@ -12,7 +10,7 @@ namespace SimplePayment.Common.Models
         public string Merchant { get; set; }
         public DateTime FinishDate { get; set; }
         public DateTime PaymentDate { get; set; }
-        public string TransactionId { get; set; }
+        public int TransactionId { get; set; }
         public Enums.PaymentStatus Status { get; set; }
     }
 }
