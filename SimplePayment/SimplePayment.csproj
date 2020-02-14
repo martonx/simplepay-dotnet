@@ -1,11 +1,19 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-  <PackageId>SimplePayment</PackageId>
-  <Version>0.1.0</Version>
-  <Authors>Lajos Marton, Adorjan Sari</Authors>
-  <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>SimplePayment</PackageId>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+
+    <!-- nuget related properties -->
+    <Version>0.1.0</Version>
+    <Authors>Lajos Marton,Adorjan Sari,Florian Marton</Authors>
+    <Description>SimplePay .Net Core SDK</Description>
+    <Copyright>Copyright 2020 © Marton Lajos. All rights reserved.</Copyright>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/martonx/simplepay-dotnet</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageType>Dependency</PackageType>
   </PropertyGroup>
   <ItemGroup>
     <None Include="licenses\LICENSE.txt" Pack="true" PackagePath="LICENSE.txt" />
