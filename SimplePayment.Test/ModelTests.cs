@@ -6,16 +6,28 @@ using System;
 using SimplePayment.Common.Enums;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using JsonOptions = SimplePayment.Helpers.CustomJsonConverter;
 
 namespace SimplePayment.Test
 {
     public class Tests
     {
+        private readonly JsonSerializerOptions customJsonOptions = new JsonSerializerOptions {
+            PropertyNameCaseInsensitive = true,
+            WriteIndented = true,
+            Converters =
+            {
+                new JsonOptions.DateTimeConverter(),
+                new JsonOptions.IntToStringConverter(),
+                new JsonOptions.LongToStringConverter()
+            }
+        };
+
         [Test]
         public void TestBillingDetailModel()
         {
             var billingDetailsJson = ReadJson("BillingDetails");
-            var billingDetails = JsonSerializer.Deserialize<BillingDetails>(billingDetailsJson);
+            var billingDetails = JsonSerializer.Deserialize<BillingDetails>(billingDetailsJson, customJsonOptions);
             var billingDetailsSerialized = JsonSerializer.Serialize(billingDetails);
 
             Assert.AreEqual(billingDetails.Name, "Teszt Béla");
@@ -33,7 +45,7 @@ namespace SimplePayment.Test
         public void TestIPNModel()
         {
             var IPNJson = ReadJson("IPN");
-            var IPN = JsonSerializer.Deserialize<IPNModel>(IPNJson, JsonOptions()); 
+            var IPN = JsonSerializer.Deserialize<IPNModel>(IPNJson, customJsonOptions); 
 
             Assert.AreEqual(IPN.Salt, "223G0O18VAqdLhQYbJz73adT36YzLtak");
             Assert.AreEqual(IPN.OrderRef, "101010515363456734591");
@@ -50,10 +62,10 @@ namespace SimplePayment.Test
         public void TestPaymentResponseModel()
         {
             var paymentResponseJson = ReadJson("PaymentResponse");
-            var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(paymentResponseJson, JsonOptions());
+            var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(paymentResponseJson, customJsonOptions);
             var paymentResponseSerialized = JsonSerializer.Serialize(paymentResponse);
 
-            Assert.AreEqual(paymentResponse.ResponseCode, int.Parse("0"));
+            Assert.AreEqual(paymentResponse.ResponseCode, 0);
             Assert.AreEqual(paymentResponse.TransactionId, "99310118");
             Assert.AreEqual(paymentResponse.Event, "SUCCESS");
             Assert.AreEqual(paymentResponse.Merchant, "PUBLICTESTHUF");
@@ -64,7 +76,7 @@ namespace SimplePayment.Test
         public void TestOrderDetailsModel()
         {
             var orderDetailsJson = ReadJson("OrderDetails");
-            var orderDetails = JsonSerializer.Deserialize<OrderDetails>(orderDetailsJson, JsonOptions());
+            var orderDetails = JsonSerializer.Deserialize<OrderDetails>(orderDetailsJson, customJsonOptions);
             var orderDetailsSerialized = JsonSerializer.Serialize(orderDetails);
 
             Assert.AreEqual(orderDetails.Merchant, "PUBLICTESTHUF");
@@ -87,7 +99,7 @@ namespace SimplePayment.Test
         public void TestOrderItemModel()
         {
             var orderItemJson = ReadJson("OrderItem");
-            var orderItem = JsonSerializer.Deserialize<OrderItem>(orderItemJson, JsonOptions());
+            var orderItem = JsonSerializer.Deserialize<OrderItem>(orderItemJson, customJsonOptions);
             var orderItemSerialized = JsonSerializer.Serialize(orderItem);
 
             Assert.AreEqual(orderItem.Ref, "Nagy Usa Körút");
@@ -105,23 +117,9 @@ namespace SimplePayment.Test
 
         private string ReadJson(string jsonFile)
         {
-            var jsonResult = File.ReadAllText($@"TestJsonFiles\{jsonFile}Json.txt");
+            var jsonResult = File.ReadAllText($@"TestJsonFiles\{jsonFile}Json.json");
 
             return RemoveWhiteSpace(jsonResult);
-        }
-
-        private JsonSerializerOptions JsonOptions()
-        {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNameCaseInsensitive = true,
-                WriteIndented = true
-            };
-
-            options.Converters.Add(new CustomJsonConverter.DateTimeConverter());
-            options.Converters.Add(new CustomJsonConverter.IntToStringConverter());
-            options.Converters.Add(new CustomJsonConverter.LongToStringConverter());
-            return options;
         }
     }
 }

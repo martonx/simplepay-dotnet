@@ -7,7 +7,7 @@ using System.Buffers.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace SimplePayment.Test
+namespace SimplePayment.Helpers
 {
     public class CustomJsonConverter
     {
@@ -74,7 +74,22 @@ namespace SimplePayment.Test
                 writer.WriteStringValue(value.ToString());
             }
         }
+
+        public static JsonSerializerOptions CustomJsonOptions()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNameCaseInsensitive = true,
+                WriteIndented = true,
+                IgnoreNullValues = true,
+                Converters =
+                {
+                    new DateTimeConverter(),
+                    new IntToStringConverter(),
+                    new LongToStringConverter()
+                }
+            };
+            return options;
+        }
     }
-
-
 }

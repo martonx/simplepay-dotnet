@@ -1,8 +1,8 @@
 ﻿using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using Newtonsoft.Json;
 using SimplePayment.Common.Models;
+using System.Text.Json;
 
 namespace SimplePayment.Helpers
 {
@@ -21,14 +21,13 @@ namespace SimplePayment.Helpers
 
         public async Task<T> PostAsync<T, TK>(TK model, string urlPart)
         {
-            var jsonContent = JsonConvert.SerializeObject(model,
-                new JsonSerializerSettings { NullValueHandling = NullValueHandling.Ignore });
+            var jsonContent = JsonSerializer.Serialize(model, CustomJsonConverter.CustomJsonOptions());
             GenerateSignatureToHeader(jsonContent);
             var stringContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(urlPart, stringContent);
             var responseString = await response.Content.ReadAsStringAsync();
 
-            return JsonConvert.DeserializeObject<T>(responseString);
+            return JsonSerializer.Deserialize<T>(responseString);
         }
 
         private void GenerateSignatureToHeader(string body)

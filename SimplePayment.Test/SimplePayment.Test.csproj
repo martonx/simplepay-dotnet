@@ -19,16 +19,31 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="TestJsonFiles\BillingDetailsJson.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestJsonFiles\BillingDetailsJson.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestJsonFiles\IPNJson.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TestJsonFiles\IPNJson.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestJsonFiles\OrderDetailsJson.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestJsonFiles\OrderDetailsJson.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestJsonFiles\OrderItemJson.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestJsonFiles\OrderItemJson.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Update="TestJsonFiles\PaymentResponseJson.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
     <None Update="TestJsonFiles\PaymentResponseJson.txt">
