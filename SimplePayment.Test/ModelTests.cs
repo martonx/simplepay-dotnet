@@ -117,7 +117,7 @@ namespace SimplePayment.Test
 
         private string ReadJson(string jsonFile)
         {
-            var jsonResult = File.ReadAllText($@"TestJsonFiles\{jsonFile}Json.json");
+            var jsonResult = File.ReadAllText($@"TestJsonFiles/{jsonFile}Json.json");
 
             return RemoveWhiteSpace(jsonResult);
         }
