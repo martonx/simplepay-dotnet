@@ -19,12 +19,12 @@ namespace SimplePayment.Helpers
             authenticationHelper = new AuthenticationHelper();
         }
 
-        public async Task<T> PostAsync<T, TK>(TK model, string urlPart)
+        public async Task<T> PostAsync<T, TK>(TK model, string url)
         {
             var jsonContent = JsonSerializer.Serialize(model, CustomJsonConverter.CustomJsonOptions());
             GenerateSignatureToHeader(jsonContent);
             var stringContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-            var response = await httpClient.PostAsync(urlPart, stringContent);
+            var response = await httpClient.PostAsync(url, stringContent);
             var responseString = await response.Content.ReadAsStringAsync();
 
             return JsonSerializer.Deserialize<T>(responseString);

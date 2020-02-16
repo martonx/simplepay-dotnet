@@ -1,0 +1,15 @@
+﻿{
+  "salt": "806a7a4830351ef68a05f3e2b077fd93",
+  "merchant": "PUBLICTESTHUF",
+  "orderRef": "101010515680194414779",
+  "currency": "HUF",
+  "customerEmail": "sdk_test@otpmobil.com",
+  "language": "HU",
+  "sdkVersion": "SimplePayV2.1_Payment_PHP_SDK_2.0.7_190701:dd236896400d7463677a82a47f53e36e",
+  "methods": [
+    "CARD"
+  ],
+  "total": "25",
+  "timeout": "2019-09-11T16:30:41+00:00",
+  "url": "https://sdk.simplepay.hu/back.php"
+}

@@ -83,13 +83,13 @@ namespace SimplePayment.Test
             Assert.AreEqual(orderDetails.OrderRef, "101010515363456734591");
             Assert.AreEqual(orderDetails.CustomerEmail, "sdk_test@otpmobil.com");
             Assert.AreEqual(orderDetails.Language, "HU");
-            Assert.AreEqual(orderDetails.Currency, Currency.HUF);
-            Assert.AreEqual(orderDetails.Total, 100);
+            Assert.AreEqual(orderDetails.Currency, "HUF");
+            Assert.AreEqual(orderDetails.Total, "100");
             Assert.AreEqual(orderDetails.TwoStep, true);
             Assert.AreEqual(orderDetails.Salt, "d471d2fb24c5a395563ff60f8ba769d1");
             Assert.AreEqual(orderDetails.Methods[0], "CARD");
             Assert.AreEqual(orderDetails.Invoice.ToString(), JsonSerializer.Deserialize<BillingDetails>(ReadJson("BillingDetails")).ToString());
-            Assert.AreEqual(orderDetails.TimeOut, DateTime.Parse("2018-09-07T20:51:13+00:00"));
+            Assert.AreEqual(orderDetails.Timeout, "2018-09-07T20:51:13+00:00");
             Assert.AreEqual(orderDetails.Url, "http://simplepaytestshop.hu/back.php");
             Assert.AreEqual(orderDetails.SDKVersion, "SimplePay_PHP_SDK_2.0_180906");
             Assert.AreEqual(orderDetails.OrderItems[0].ToString(), JsonSerializer.Deserialize<OrderItem>(ReadJson("OrderItem")).ToString());
