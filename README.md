@@ -1,17 +1,4 @@
 # simplepay-dotnet
 SimplePay .Net SDK
 
-Possible credentians that can be used for test runs : 
-
-HUF
-HUF_MERCHANT : PUBLICTESTHUF
-HUF_SECRET_KEY : FxDa5w314kLlNseq2sKuVwaqZshZT5d6
-
-EUR
-EUR_MERCHANT : PUBLICTESTEUR
-EUR_SECRET_KEY : 9A2sDc7xh1JKW8r193RwW7X7X2ts837w
-
-USD
-USD_MERCHANT : PUBLICTESTUSD
-USD_SECRET_KEY : Aa9cDbHc1i2lLmN4z3C542zjXqZiDiCj
 
