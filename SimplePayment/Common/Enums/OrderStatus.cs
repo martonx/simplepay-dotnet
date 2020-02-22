@@ -8,7 +8,8 @@
         PaymentSuccess = 4,
         PaymentFailed = 5,
         PaymentCancelled = 6,
-        PaymentTimeout = 7
+        PaymentTimeout = 7,
+        IPNSuccess = 8
     }
 }
  

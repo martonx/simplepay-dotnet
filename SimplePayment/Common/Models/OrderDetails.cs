@@ -18,7 +18,7 @@ namespace SimplePayment.Common.Models
         public string SDKVersion { get; set; }
         public string[] Methods { get; set; }
         public string Total { get; set; }
-        public string Timeout { get; set; }
+        public DateTime Timeout { get; set; }
         public string Url { get; set; }
         public bool? TwoStep { get; set; }
         public BillingDetails Invoice { get; set; }

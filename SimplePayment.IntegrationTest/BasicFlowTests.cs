@@ -9,7 +9,7 @@ namespace SimplePayment.IntegrationTest
 
         public BasicFlowTests()
         {
-            var settings = new SimplePaymentSettings { IsTestEnvironment = true, Merchant = "valami", SecretKey = "valami" };
+            var settings = new SimplePaymentSettings { IsTestEnvironment = true, Merchant = "PUBLICTESTHUF", SecretKey = "FxDa5w314kLlNseq2sKuVwaqZshZT5d6" };
             paymentService = new SimplePaymentService(settings);
         }
 

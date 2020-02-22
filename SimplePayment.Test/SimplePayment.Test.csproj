@@ -55,6 +55,9 @@
     <None Update="TestJsonFiles\Message.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestJsonFiles\TransactionResponseJson.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
   <ItemGroup>

@@ -1,4 +1,6 @@
-﻿namespace SimplePayment.Common.Models
+﻿using System.Text.Json.Serialization;
+
+namespace SimplePayment.Common.Models
 {
     public class TransactionResponse
     {
@@ -6,7 +8,7 @@
         public string Merchant { get; set; }
         public string OrderRef { get; set; }
         public string Currency { get; set; }
-        public string TransactionId { get; set; }
+        public int TransactionId { get; set; }
         public string Timeout { get; set; }
         public decimal Total { get; set; }
         public string PaymentUrl { get; set; }

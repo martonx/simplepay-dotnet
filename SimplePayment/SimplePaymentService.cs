@@ -1,4 +1,5 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SimplePayment.Common.Enums;
@@ -40,7 +41,16 @@ namespace SimplePayment
             }
 
             var url = _urlGeneratorHelper.GenerateUrl(URLType.StartTransaction);
-            var response = await _simplePaymentClient.PostAsync<TransactionResponse, OrderDetails>(orderDetails, url);
+            TransactionResponse response = null;
+            try
+            {
+                response = await _simplePaymentClient.PostAsync<TransactionResponse, OrderDetails>(orderDetails, url);
+            }
+            catch (Exception ex)
+            {
+                result.Status = OrderStatus.ValidationError;
+                result.Error = ex.Message;
+            }
 
             if (response.ErrorCodes != null )
             {
@@ -53,6 +63,7 @@ namespace SimplePayment
                 result.Timeout = response.Timeout;
                 result.TransactionId = response.TransactionId;
                 result.OrderRef = response.OrderRef;
+                result.Status = OrderStatus.TransactionStartSuccess;
             }
 
             return result;
@@ -72,7 +83,7 @@ namespace SimplePayment
                 return response;
             }
 
-            if (paymentResponse.Event != "Success")
+            if (paymentResponse.Event.ToLower() != "success")
             {
                 response.Error = $"Payment failed with status {paymentResponse.Event}";
                 response.Status = OrderStatus.PaymentFailed;
@@ -89,7 +100,7 @@ namespace SimplePayment
         {
             var result = new OrderResponse();
             var isValidSignature = _authenticationHelper.IsMessageValid(_simplePaymentSettings.SecretKey,
-                JsonSerializer.Serialize(paymentResponse),
+                JsonSerializer.Serialize(ipnResponse),
                 signature);
 
             if (!isValidSignature)
@@ -99,11 +110,23 @@ namespace SimplePayment
                 return result;
             }
 
-            var request = (IPNRequestModel) ipnResponse;
-            await _simplePaymentClient.PostAsync<string, IPNRequestModel>(request,
+            var ipnRequest = new IPNRequestModel
+            {
+                Salt = ipnResponse.Salt,
+                FinishDate = ipnResponse.FinishDate,
+                Method = ipnResponse.Method,
+                Merchant = ipnResponse.Merchant,
+                OrderRef = ipnResponse.OrderRef,
+                PaymentDate = ipnResponse.PaymentDate,
+                ReceiveDate = DateTime.Now,
+                Status = ipnResponse.Status,
+                TransactionId = ipnResponse.TransactionId
+            };
+
+            await _simplePaymentClient.PostAsync<string,  IPNRequestModel>(ipnRequest,
                     _urlGeneratorHelper.GenerateUrl(URLType.IPN));
 
-            result.Status = OrderStatus.PaymentSuccess;
+            result.Status = OrderStatus.IPNSuccess;
             return result;
         }
 
@@ -123,7 +146,6 @@ namespace SimplePayment
                          !string.IsNullOrEmpty(orderDetails.SDKVersion) &&
                          orderDetails.Methods.Length > 0 &&
                          !string.IsNullOrEmpty(orderDetails.Total) &&
-                         !string.IsNullOrEmpty(orderDetails.Timeout) &&
                          !string.IsNullOrEmpty(orderDetails.Url) &&
                          (!string.IsNullOrEmpty(orderDetails.Invoice.Name) ||
                           !string.IsNullOrEmpty(orderDetails.Invoice.Company)) &&

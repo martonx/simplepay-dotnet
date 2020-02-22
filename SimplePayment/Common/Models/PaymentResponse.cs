@@ -7,7 +7,7 @@ namespace SimplePayment.Common.Models
         [JsonName("r")]
         public int ResponseCode { get; set; }
         [JsonName("t")]
-        public string TransactionId { get; set; }
+        public int TransactionId { get; set; }
         [JsonName("e")]
         public string Event { get; set; }
         [JsonName("m")]

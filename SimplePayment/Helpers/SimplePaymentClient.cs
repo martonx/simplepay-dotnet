@@ -1,4 +1,6 @@
-﻿using System.Net.Http;
+﻿using System;
+using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using SimplePayment.Common.Models;
@@ -26,9 +28,15 @@ namespace SimplePayment.Helpers
             GenerateSignatureToHeader(jsonContent);
             var stringContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(url, stringContent);
+            var responseSignature = response.Headers.GetValues("Signature").FirstOrDefault();
             var responseString = await response.Content.ReadAsStringAsync();
 
-            return JsonSerializer.Deserialize<T>(responseString);
+            if (!authenticationHelper.IsMessageValid(settings.SecretKey,responseString,responseSignature))
+            {
+                throw new Exception("Response signature doesn't match the generated!");
+            }
+
+            return JsonSerializer.Deserialize<T>(responseString, CustomJsonConverter.CustomJsonOptions());
         }
 
         private void GenerateSignatureToHeader(string body)

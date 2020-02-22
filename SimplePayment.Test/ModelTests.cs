@@ -110,6 +110,14 @@ namespace SimplePayment.Test
             Assert.AreEqual(orderItem.Tax, 210000);
         }
 
+        [Test]
+        public void TestTransactionResponse()
+        {
+            var json = ReadJson("TransactionResponse");
+            var response = JsonSerializer.Deserialize<TransactionResponse>(json, customJsonOptions);
+            Assert.IsNotNull(response.PaymentUrl);
+        }
+
         private string RemoveWhiteSpace(string json)
         {
             return Regex.Replace(json, @"(""[^""\\]*(?:\\.[^""\\]*)*"")|\s+", "$1");
