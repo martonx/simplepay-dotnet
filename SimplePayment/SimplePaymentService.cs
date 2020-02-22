@@ -130,9 +130,27 @@ namespace SimplePayment
             return result;
         }
 
-        public OrderResponse FinishTwoStepTransaction(FinishRequest finishRequest, OrderResponse orderResponse)
+        public async Task<OrderResponse> FinishTwoStepTransaction(FinishRequest finishRequest, OrderResponse orderResponse)
         {
-            throw new System.NotImplementedException();
+            var result = new OrderResponse();
+            if (orderResponse.Status != OrderStatus.IPNSuccess)
+            {
+                result.Status = OrderStatus.ValidationError;
+                result.Error = "IPN wasn't successful";
+                return result;
+            }
+
+            finishRequest.Merchant = _simplePaymentSettings.Merchant;
+            finishRequest.Salt = _authenticationHelper.GenerateSalt();
+            var response = await _simplePaymentClient.PostAsync<string, FinishRequest>(finishRequest,
+                _urlGeneratorHelper.GenerateUrl(URLType.TwoStepFinish));
+
+            return new OrderResponse
+            {
+                TransactionId = orderResponse.TransactionId,
+                OrderRef = finishRequest.OrderRef,
+                Status = OrderStatus.SuccessfulTwoStepFinish
+            };
         }
 
         private bool ValidateOrderDetailsModel(OrderDetails orderDetails)

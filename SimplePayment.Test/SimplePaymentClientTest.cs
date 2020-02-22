@@ -107,7 +107,7 @@ namespace SimplePayment.Test
                 OrderRef = new Random().Next(100000,900000).ToString(),
                 SDKVersion = "Test",
                 Total = "1",
-                Timeout = DateTime.Parse("2020-09-11T19:14:08+00:00"),
+                Timeout = "2020-09-11T19:14:08+00:00",
                 Url = "https://sdk.simplepay.hu/back.php",
                 Salt = "126dac8a12693a6475c7c24143024ef8"
             };

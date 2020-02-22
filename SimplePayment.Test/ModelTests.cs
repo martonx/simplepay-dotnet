@@ -66,7 +66,7 @@ namespace SimplePayment.Test
             var paymentResponseSerialized = JsonSerializer.Serialize(paymentResponse);
 
             Assert.AreEqual(paymentResponse.ResponseCode, 0);
-            Assert.AreEqual(paymentResponse.TransactionId, "99310118");
+            Assert.AreEqual(paymentResponse.TransactionId, 99310118);
             Assert.AreEqual(paymentResponse.Event, "SUCCESS");
             Assert.AreEqual(paymentResponse.Merchant, "PUBLICTESTHUF");
             Assert.AreEqual(paymentResponse.OrderId, "101010515363456734591");
