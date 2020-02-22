@@ -87,7 +87,8 @@ namespace SimplePayment.Helpers
                     new DateTimeConverter(),
                     new IntToStringConverter(),
                     new LongToStringConverter()
-                }
+                },
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
             };
             return options;
         }

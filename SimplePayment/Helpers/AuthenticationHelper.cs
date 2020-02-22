@@ -9,8 +9,8 @@ namespace SimplePayment.Helpers
         //TODO it's not right
         public string HMACSHA384Encode(string key, string message)
         {
-            var keyByteArray = Encoding.UTF32.GetBytes(key);
-            var messageBytes = Encoding.UTF32.GetBytes(message);
+            var keyByteArray = Encoding.Default.GetBytes(key);
+            var messageBytes = Encoding.Default.GetBytes(message);
             using (var hmac = new HMACSHA384(keyByteArray))
             {
                 hmac.ComputeHash(messageBytes);
@@ -28,8 +28,8 @@ namespace SimplePayment.Helpers
         {
             byte[] salt = new byte[32];
             var rngProvider = new RNGCryptoServiceProvider();
-            rngProvider.GetBytes(salt);
-            return Convert.ToBase64String(salt, Base64FormattingOptions.None);
+            rngProvider.GetNonZeroBytes(salt);
+            return Convert.ToBase64String(salt, Base64FormattingOptions.None).Substring(0,32);
         }
     }
 }

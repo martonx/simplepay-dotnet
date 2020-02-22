@@ -42,7 +42,7 @@ namespace SimplePayment
             var url = _urlGeneratorHelper.GenerateUrl(URLType.StartTransaction);
             var response = await _simplePaymentClient.PostAsync<TransactionResponse, OrderDetails>(orderDetails, url);
 
-            if (response.ErrorCodes.Length > 0)
+            if (response.ErrorCodes != null )
             {
                 result.Status = OrderStatus.TransactionStartFailed;
                 result.Error = string.Join(",", response.ErrorCodes);
