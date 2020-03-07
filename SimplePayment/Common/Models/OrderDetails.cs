@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -23,5 +24,37 @@ namespace SimplePayment.Common.Models
         public bool? TwoStep { get; set; }
         public BillingDetails Invoice { get; set; }
         public OrderItem[] OrderItems { get; set; }
+
+        public OrderDetails()
+        {
+            
+        }
+
+        public OrderDetails(OrderDetailsInput orderDetailsInput)
+        {
+            SDKVersion = typeof(OrderDetails).Assembly
+                .GetCustomAttribute<AssemblyFileVersionAttribute>().Version;
+            OrderRef = orderDetailsInput.OrderRef;
+            Currency = orderDetailsInput.Currency.CurrencyText;
+            CustomerEmail = orderDetailsInput.CustomerEmail;
+            Language = orderDetailsInput.Language;
+            Methods = new string[orderDetailsInput.Methods.Length];
+            for (int i = 0; i < orderDetailsInput.Methods.Length; i++)
+            {
+                switch (orderDetailsInput.Methods[i])
+                {
+                    case PaymentMethodTypes.CARD:
+                        Methods[i] = "CARD";
+                        break;
+                }
+            }
+
+            Total = orderDetailsInput.Total;
+            Timeout = orderDetailsInput.Timeout.ToString("yyyy-MM-ddTHH:mm:ssK");
+            Url = orderDetailsInput.Url;
+            TwoStep = orderDetailsInput.TwoStep;
+            Invoice = orderDetailsInput.Invoice;
+            OrderItems = orderDetailsInput.OrderItems;
+        }
     }
 }

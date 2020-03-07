@@ -12,6 +12,6 @@ namespace SimplePayment.Common.Models
         public string Timeout { get; set; }
         public decimal Total { get; set; }
         public string PaymentUrl { get; set; }
-        public string[] ErrorCodes { get; set; }
+        public int[] ErrorCodes { get; set; }
     }
 }

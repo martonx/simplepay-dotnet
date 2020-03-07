@@ -8,13 +8,13 @@ using System.Text.Json;
 
 namespace SimplePayment.Helpers
 {
-    public class SimplePaymentClient
+    public class HttpClientWrapper
     {
         private readonly HttpClient httpClient;
         private readonly AuthenticationHelper authenticationHelper;
         private readonly SimplePaymentSettings settings;
 
-        public SimplePaymentClient(HttpClient httpClient, SimplePaymentSettings settings)
+        public HttpClientWrapper(HttpClient httpClient, SimplePaymentSettings settings)
         {
             this.httpClient = httpClient;
             this.settings = settings;
@@ -28,12 +28,17 @@ namespace SimplePayment.Helpers
             GenerateSignatureToHeader(jsonContent);
             var stringContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
             var response = await httpClient.PostAsync(url, stringContent);
-            var responseSignature = response.Headers.GetValues("Signature").FirstOrDefault();
-            var responseString = await response.Content.ReadAsStringAsync();
 
+            if (!response.Headers.Contains("Signature"))
+            {
+                throw new Exception("Response couldn't be validated, it can be an issue with formatting, or the it may have been tampered with");
+            }
+
+            var responseString = await response.Content.ReadAsStringAsync();
+            var responseSignature = response.Headers.GetValues("Signature").FirstOrDefault();
             if (!authenticationHelper.IsMessageValid(settings.SecretKey,responseString,responseSignature))
             {
-                throw new Exception("Response signature doesn't match the generated!");
+                throw new Exception("Response couldn't be validated!");
             }
 
             return JsonSerializer.Deserialize<T>(responseString, CustomJsonConverter.CustomJsonOptions());

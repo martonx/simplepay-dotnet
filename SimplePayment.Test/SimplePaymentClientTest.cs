@@ -11,14 +11,14 @@ namespace SimplePayment.Test
 {
     public class SimplePaymentClientTest
     {
-        private SimplePaymentService paymentService;
+        private SimplePaymentClient _paymentClient;
         private AuthenticationHelper authenticationHelper;
 
         [SetUp]
         public void Init()
         {
             var settings = new SimplePaymentSettings { IsTestEnvironment = true, Merchant = "PUBLICTESTHUF", SecretKey = "FxDa5w314kLlNseq2sKuVwaqZshZT5d6" };
-            paymentService = new SimplePaymentService(settings);
+            _paymentClient = new SimplePaymentClient(settings);
             authenticationHelper = new AuthenticationHelper();
         }
 
@@ -26,19 +26,29 @@ namespace SimplePayment.Test
         public async Task StartTransactionTest()
         {
             var order = GenerateOrderDetails();
-            var result = await paymentService.StartTransaction(order, false);
+            var result = await _paymentClient.StartTransaction(order);
             Assert.AreEqual(result.Status, OrderStatus.TransactionStartSuccess);
             Assert.True(!string.IsNullOrEmpty(result.PaymentUrl));
+        }
+
+        [Test]
+        public async Task StartTransactionShouldFailTest()
+        {
+            var order = GenerateOrderDetails();
+            order.OrderRef = "1";
+            var result = await _paymentClient.StartTransaction(order);
+            Assert.AreEqual(result.Status, OrderStatus.TransactionStartFailed);
+            Assert.True(result.Error.Contains("5013"));
         }
 
         [Test]
         public async Task HandlePaymentResponseTest()
         {
             var order = GenerateOrderDetails();
-            var result = await paymentService.StartTransaction(order, false);
+            var result = await _paymentClient.StartTransaction(order);
             var paymentResponse = GeneratePaymentResponse(result.OrderRef, result.TransactionId);
             var paymentString = JsonSerializer.Serialize(paymentResponse);
-            var paymentResult = paymentService.HandlePaymentResponse(paymentResponse,authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6",paymentString));
+            var paymentResult = _paymentClient.ProcessPaymentResponse(paymentResponse,authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6",paymentString));
             Assert.AreEqual(OrderStatus.PaymentSuccess,paymentResult.Status);
         }
 
@@ -46,13 +56,13 @@ namespace SimplePayment.Test
         public async Task IPNResponseTest()
         {
             var order = GenerateOrderDetails();
-            var result = await paymentService.StartTransaction(order, false);
+            var result = await _paymentClient.StartTransaction(order);
             var paymentResponse = GeneratePaymentResponse(result.OrderRef, result.TransactionId);
             var model = GenerateIPNModel(result.OrderRef,result.TransactionId);
             var ipnString = JsonSerializer.Serialize(model);
             var paymentString = JsonSerializer.Serialize(paymentResponse);
-            var paymentResult = paymentService.HandlePaymentResponse(paymentResponse, authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", paymentString));
-            var ipnResult = await paymentService.HandleIPNResponse(paymentResult, model,
+            var paymentResult = _paymentClient.ProcessPaymentResponse(paymentResponse, authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", paymentString));
+            var ipnResult = await _paymentClient.HandleIPNResponse(paymentResult, model,
                 authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", ipnString));
             Assert.AreEqual(OrderStatus.IPNSuccess, ipnResult.Status);
         }
@@ -84,11 +94,11 @@ namespace SimplePayment.Test
             };
         }
 
-        private OrderDetails GenerateOrderDetails()
+        private OrderDetailsInput GenerateOrderDetails()
         {
-            return new OrderDetails
+            return new OrderDetailsInput()
             {
-                Currency = "HUF",
+                Currency = Currency.HUF,
                 CustomerEmail = "test@test.com",
                 Invoice = new BillingDetails()
                 {
@@ -103,13 +113,11 @@ namespace SimplePayment.Test
                     Zip = "1222"
                 },
                 Language = "HU",
-                Methods = new []{"CARD"},
+                Methods = new []{PaymentMethodTypes.CARD},
                 OrderRef = new Random().Next(100000,900000).ToString(),
-                SDKVersion = "Test",
                 Total = "1",
-                Timeout = "2020-09-11T19:14:08+00:00",
+                Timeout = DateTimeOffset.Now.AddMinutes(10),
                 Url = "https://sdk.simplepay.hu/back.php",
-                Salt = "126dac8a12693a6475c7c24143024ef8"
             };
         }
     }

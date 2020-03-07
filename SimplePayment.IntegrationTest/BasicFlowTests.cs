@@ -5,12 +5,12 @@ namespace SimplePayment.IntegrationTest
 {
     public class BasicFlowTests
     {
-        private readonly SimplePaymentService paymentService;
+        private readonly SimplePaymentClient _paymentClient;
 
         public BasicFlowTests()
         {
             var settings = new SimplePaymentSettings { IsTestEnvironment = true, Merchant = "PUBLICTESTHUF", SecretKey = "FxDa5w314kLlNseq2sKuVwaqZshZT5d6" };
-            paymentService = new SimplePaymentService(settings);
+            _paymentClient = new SimplePaymentClient(settings);
         }
 
         [SetUp]
