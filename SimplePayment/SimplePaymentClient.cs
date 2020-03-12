@@ -79,9 +79,9 @@ namespace SimplePayment
             return _simplePaymentService.ValidatePaymentResponse(response, signature);
         }
 
-        public OrderResponse HandleIPNResponse(IPNRequestModel ipnResponse, string signature)
+        public IPNProcessResult HandleIPNResponse(IPNRequestModel ipnResponse, string signature)
         {
-            var result = new OrderResponse();
+            var result = new IPNProcessResult();
             var ipnModel = JsonSerializer.Deserialize<IPNModel>(JsonSerializer.Serialize(ipnResponse));
             var isValidSignature = _authenticationHelper.IsMessageValid(_simplePaymentSettings.SecretKey,
                 JsonSerializer.Serialize(ipnModel),
@@ -89,8 +89,8 @@ namespace SimplePayment
 
             if (!isValidSignature)
             {
-                result.Error = "Signature validation failed";
-                result.Status = OrderStatus.ValidationError;
+                result.ErrorMessage = "Signature validation failed";
+                result.IsSuccessful = false;
                 return result;
             }
 
@@ -98,26 +98,32 @@ namespace SimplePayment
             {
                 case PaymentStatus.Finished:
                 case PaymentStatus.Authorised:
-                    result.Status = OrderStatus.IPNSuccess;
+                    result.IsSuccessful = true;
                     break;
                 case PaymentStatus.Cancelled:
-                    result.Status = OrderStatus.IPNFailed;
-                    result.Error = $"Payment was cancelled";
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = $"Payment was cancelled";
                     break;
                 case PaymentStatus.Timeout:
-                    result.Status = OrderStatus.IPNFailed;
-                    result.Error = $"Payment timeout reached";
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = $"Payment timeout reached";
                     break;
                 case PaymentStatus.Fraud:
                 case PaymentStatus.InFraud:
-                    result.Status = OrderStatus.IPNFailed;
-                    result.Error = $"Fraud detection uncovered possible issue with card";
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = $"Fraud detection uncovered possible issue with card";
                     break;
                 default:
-                    result.Status = OrderStatus.IPNFailed;
-                    result.Error = $"IPN failed with status {result.Status}";
+                    result.IsSuccessful = false;
+                    result.ErrorMessage = $"IPN failed with status {ipnResponse.Status}";
                     break;
                 
+            }
+
+            if (result.IsSuccessful)
+            {
+                result.Signature =
+                    _authenticationHelper.HMACSHA384Encode(_simplePaymentSettings.SecretKey, JsonSerializer.Serialize(ipnResponse));
             }
 
             return result;

@@ -61,7 +61,10 @@ namespace SimplePayment.Test
             var requestModel = JsonSerializer.Deserialize<IPNRequestModel>(JsonSerializer.Serialize(model));
             requestModel.ReceiveDate = DateTime.Now;
             var ipnResult =  _paymentClient.HandleIPNResponse(requestModel, hash);
-            Assert.AreEqual(OrderStatus.IPNSuccess, ipnResult.Status);
+            Assert.IsTrue(ipnResult.IsSuccessful);
+
+            var resultSignatureExpected = authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", JsonSerializer.Serialize(requestModel));
+            Assert.AreEqual(resultSignatureExpected,ipnResult.Signature);
         }
 
         private IPNModel GenerateIPNModel()
