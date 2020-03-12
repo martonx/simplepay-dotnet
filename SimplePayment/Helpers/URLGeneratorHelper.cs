@@ -14,7 +14,6 @@ namespace SimplePayment.Helpers
         private readonly Dictionary<URLType, string> urlMap = new Dictionary<URLType, string>
         {
             {URLType.StartTransaction, "start"},
-            {URLType.IPN, ""},
             {URLType.TwoStepFinish, "finish"}
         };
 

@@ -52,22 +52,19 @@ namespace SimplePayment.Test
             Assert.AreEqual(OrderStatus.PaymentSuccess,paymentResult.Status);
         }
 
-        [Test, Ignore("Not complete")]
+        [Test]
         public async Task IPNResponseTest()
         {
-            var order = GenerateOrderDetails();
-            var result = await _paymentClient.StartTransaction(order);
-            var paymentResponse = GeneratePaymentResponse(result.OrderRef, result.TransactionId);
-            var model = GenerateIPNModel(result.OrderRef,result.TransactionId);
+            var model = GenerateIPNModel();
             var ipnString = JsonSerializer.Serialize(model);
-            var paymentString = JsonSerializer.Serialize(paymentResponse);
-            var paymentResult = _paymentClient.ProcessPaymentResponse(paymentResponse, authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", paymentString));
-            var ipnResult = await _paymentClient.HandleIPNResponse(paymentResult, model,
-                authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", ipnString));
+            var hash = authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", ipnString);
+            var requestModel = JsonSerializer.Deserialize<IPNRequestModel>(JsonSerializer.Serialize(model));
+            requestModel.ReceiveDate = DateTime.Now;
+            var ipnResult =  _paymentClient.HandleIPNResponse(requestModel, hash);
             Assert.AreEqual(OrderStatus.IPNSuccess, ipnResult.Status);
         }
 
-        private IPNModel GenerateIPNModel(string orderID, int transactionID)
+        private IPNModel GenerateIPNModel()
         {
             return new IPNModel()
             {
@@ -75,10 +72,10 @@ namespace SimplePayment.Test
                 Merchant = "PUBLICTESTHUF",
                 Method = "CARD",
                 PaymentDate = DateTime.Now,
-                OrderRef = orderID,
+                OrderRef = new Random().Next(100000, 900000).ToString(),
                 Salt = authenticationHelper.GenerateSalt(),
                 Status = PaymentStatus.Finished,
-                TransactionId = transactionID
+                TransactionId = new Random().Next(100000, 900000)
             };
         }
 

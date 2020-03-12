@@ -79,11 +79,12 @@ namespace SimplePayment
             return _simplePaymentService.ValidatePaymentResponse(response, signature);
         }
 
-        public async Task<OrderResponse> HandleIPNResponse(OrderResponse paymentResponse, IPNModel ipnResponse, string signature)
+        public OrderResponse HandleIPNResponse(IPNRequestModel ipnResponse, string signature)
         {
             var result = new OrderResponse();
+            var ipnModel = JsonSerializer.Deserialize<IPNModel>(JsonSerializer.Serialize(ipnResponse));
             var isValidSignature = _authenticationHelper.IsMessageValid(_simplePaymentSettings.SecretKey,
-                JsonSerializer.Serialize(ipnResponse),
+                JsonSerializer.Serialize(ipnModel),
                 signature);
 
             if (!isValidSignature)
@@ -93,44 +94,44 @@ namespace SimplePayment
                 return result;
             }
 
-            var ipnRequest = new IPNRequestModel
+            switch (ipnResponse.Status)
             {
-                Salt = ipnResponse.Salt,
-                FinishDate = ipnResponse.FinishDate,
-                Method = ipnResponse.Method,
-                Merchant = ipnResponse.Merchant,
-                OrderRef = ipnResponse.OrderRef,
-                PaymentDate = ipnResponse.PaymentDate,
-                ReceiveDate = DateTime.Now,
-                Status = ipnResponse.Status,
-                TransactionId = ipnResponse.TransactionId
-            };
+                case PaymentStatus.Finished:
+                case PaymentStatus.Authorised:
+                    result.Status = OrderStatus.IPNSuccess;
+                    break;
+                case PaymentStatus.Cancelled:
+                    result.Status = OrderStatus.IPNFailed;
+                    result.Error = $"Payment was cancelled";
+                    break;
+                case PaymentStatus.Timeout:
+                    result.Status = OrderStatus.IPNFailed;
+                    result.Error = $"Payment timeout reached";
+                    break;
+                case PaymentStatus.Fraud:
+                case PaymentStatus.InFraud:
+                    result.Status = OrderStatus.IPNFailed;
+                    result.Error = $"Fraud detection uncovered possible issue with card";
+                    break;
+                default:
+                    result.Status = OrderStatus.IPNFailed;
+                    result.Error = $"IPN failed with status {result.Status}";
+                    break;
+                
+            }
 
-            await _httpClientWrapper.PostAsync<string,  IPNRequestModel>(ipnRequest,
-                    _urlGeneratorHelper.GenerateUrl(URLType.IPN));
-
-            result.Status = OrderStatus.IPNSuccess;
             return result;
         }
 
-        public async Task<OrderResponse> FinishTwoStepTransaction(FinishRequest finishRequest, OrderResponse orderResponse)
+        public async Task<OrderResponse> FinishTwoStepTransaction(FinishRequest finishRequest)
         {
-            var result = new OrderResponse();
-            if (orderResponse.Status != OrderStatus.IPNSuccess)
-            {
-                result.Status = OrderStatus.ValidationError;
-                result.Error = "IPN wasn't successful";
-                return result;
-            }
-
             finishRequest.Merchant = _simplePaymentSettings.Merchant;
             finishRequest.Salt = _authenticationHelper.GenerateSalt();
-            var response = await _httpClientWrapper.PostAsync<string, FinishRequest>(finishRequest,
+            await _httpClientWrapper.PostAsync<string, FinishRequest>(finishRequest,
                 _urlGeneratorHelper.GenerateUrl(URLType.TwoStepFinish));
 
             return new OrderResponse
             {
-                TransactionId = orderResponse.TransactionId,
                 OrderRef = finishRequest.OrderRef,
                 Status = OrderStatus.SuccessfulTwoStepFinish
             };

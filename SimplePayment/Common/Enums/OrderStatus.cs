@@ -10,7 +10,9 @@
         PaymentCancelled = 6,
         PaymentTimeout = 7,
         IPNSuccess = 8,
-        SuccessfulTwoStepFinish = 9
+        IPNFailed = 9,
+        PaymentPending = 10,
+        SuccessfulTwoStepFinish = 11
     }
 }
  
