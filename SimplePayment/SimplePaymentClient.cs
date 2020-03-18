@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net.Http;
+using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
 using SimplePayment.Common.Enums;
@@ -129,18 +130,40 @@ namespace SimplePayment
             return result;
         }
 
-        public async Task<OrderResponse> FinishTwoStepTransaction(FinishRequest finishRequest)
+        public async Task<OrderResponse> FinishTwoStepTransaction(FinishRequestInput finishRequestInput)
         {
-            finishRequest.Merchant = _simplePaymentSettings.Merchant;
-            finishRequest.Salt = _authenticationHelper.GenerateSalt();
-            await _httpClientWrapper.PostAsync<string, FinishRequest>(finishRequest,
-                _urlGeneratorHelper.GenerateUrl(URLType.TwoStepFinish));
-
-            return new OrderResponse
+            var finishRequest = new FinishRequest()
             {
-                OrderRef = finishRequest.OrderRef,
-                Status = OrderStatus.SuccessfulTwoStepFinish
+                ApproveTotal = finishRequestInput.ApproveTotal,
+                Currency = finishRequestInput.Currency.CurrencyText,
+                Merchant = _simplePaymentSettings.Merchant,
+                OrderRef = finishRequestInput.OrderRef,
+                OriginalTotal = finishRequestInput.OriginalTotal,
+                Salt = _authenticationHelper.GenerateSalt(),
+                SDKVersion = typeof(OrderDetails).Assembly
+                    .GetCustomAttribute<AssemblyFileVersionAttribute>().Version
             };
+
+            try
+            {
+                await _httpClientWrapper.PostAsync<string, FinishRequest>(finishRequest,
+                    _urlGeneratorHelper.GenerateUrl(URLType.TwoStepFinish));
+                return new OrderResponse
+                {
+                    OrderRef = finishRequest.OrderRef,
+                    Status = OrderStatus.SuccessfulTwoStepFinish
+                };
+            }
+            catch (Exception ex)
+            {
+                return new OrderResponse
+                {
+                    Error = ex.Message,
+                    OrderRef = finishRequest.OrderRef,
+                    Status = OrderStatus.FailedTwoStepFinish
+                };
+            }
+
         }
 
         private bool ValidateOrderDetailsModel(OrderDetails orderDetails)

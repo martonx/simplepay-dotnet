@@ -12,7 +12,8 @@
         IPNSuccess = 8,
         IPNFailed = 9,
         PaymentPending = 10,
-        SuccessfulTwoStepFinish = 11
+        SuccessfulTwoStepFinish = 11,
+        FailedTwoStepFinish = 12
     }
 }
  

@@ -8,6 +8,6 @@ namespace SimplePayment
         Task<StartTransactionResponse> StartTransaction(OrderDetailsInput orderDetailsInput);
         OrderResponse ProcessPaymentResponse(PaymentResponse response, string signature);
         IPNProcessResult HandleIPNResponse(IPNRequestModel ipnResponse, string signature);
-        Task<OrderResponse> FinishTwoStepTransaction(FinishRequest finishRequest);
+        Task<OrderResponse> FinishTwoStepTransaction(FinishRequestInput finishRequestInput);
     }
 }
