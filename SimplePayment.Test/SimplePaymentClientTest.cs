@@ -59,8 +59,6 @@ namespace SimplePayment.Test
             Assert.AreEqual(OrderStatus.PaymentSuccess, paymentResult.Status);
         }
 
-        [Test]
-        public async Task IPNResponseTest()
         public async Task HandlePaymentResponseShouldFailTest()
         {
             var order = GenerateOrderDetails();
@@ -142,7 +140,6 @@ namespace SimplePayment.Test
                     State = "Budapest",
                     Zip = "1222"
                 },
-                Language = "HU",
                 Language = Language.HU,
                 Methods = new[] { PaymentMethodTypes.CARD },
                 OrderRef = new Random().Next(100000, 900000).ToString(),
