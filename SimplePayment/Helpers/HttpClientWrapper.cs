@@ -47,6 +47,7 @@ namespace SimplePayment.Helpers
         private void GenerateSignatureToHeader(string body)
         {
             var hash = authenticationHelper.HMACSHA384Encode(settings.SecretKey, body);
+            httpClient.DefaultRequestHeaders.Clear();
             httpClient.DefaultRequestHeaders.Add("Signature", hash);
         }
 

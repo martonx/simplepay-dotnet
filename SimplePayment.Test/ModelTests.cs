@@ -5,7 +5,6 @@ using System.IO;
 using System;
 using SimplePayment.Common.Enums;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using JsonOptions = SimplePayment.Helpers.CustomJsonConverter;
 
 namespace SimplePayment.Test

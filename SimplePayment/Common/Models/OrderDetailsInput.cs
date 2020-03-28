@@ -10,7 +10,7 @@ namespace SimplePayment.Common.Models
         public string OrderRef { get; set; }
         public Currency Currency { get; set; }
         public string CustomerEmail { get; set; }
-        public string Language { get; set; }
+        public Language Language { get; set; }
         public PaymentMethodTypes[] Methods { get; set; }
         public string Total { get; set; }
         public DateTimeOffset Timeout { get; set; }

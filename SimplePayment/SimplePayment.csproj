@@ -2,11 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <PackageId>SimplePayment</PackageId>
+    <PackageId>SimplePaymentSDK</PackageId>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <!-- nuget related properties -->
-    <Version>0.6.0</Version>
+    <Version>1.0.1</Version>
     <Authors>Lajos Marton,Adorjan Sari,Florian Marton</Authors>
     <Description>SimplePay .Net Core SDK</Description>
     <Copyright>Copyright 2020 © Marton Lajos. All rights reserved.</Copyright>

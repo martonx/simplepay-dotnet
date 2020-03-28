@@ -37,17 +37,13 @@ namespace SimplePayment
             {
                 result.Status = OrderStatus.ValidationError;
                 result.Error = "Error during validation, please check if all required fields are populated correctly";
-            }
-
-            if (!string.IsNullOrEmpty(result.Error))
-            {
                 return result;
             }
 
-            var url = _urlGeneratorHelper.GenerateUrl(URLType.StartTransaction);
             TransactionResponse response;
             try
             {
+                var url = _urlGeneratorHelper.GenerateUrl(URLType.StartTransaction);
                 response = await _httpClientWrapper.PostAsync<TransactionResponse, OrderDetails>(orderDetails, url);
             }
             catch (Exception ex)
@@ -146,11 +142,22 @@ namespace SimplePayment
 
             try
             {
-                await _httpClientWrapper.PostAsync<string, FinishRequest>(finishRequest,
+                var response = await _httpClientWrapper.PostAsync<FinishResponse, FinishRequest>(finishRequest,
                     _urlGeneratorHelper.GenerateUrl(URLType.TwoStepFinish));
+                if (response.ErrorCodes != null)
+                {
+                    var errorCodes = string.Join(",", response.ErrorCodes);
+                    return new OrderResponse
+                    {
+                        Error = $"Transaction failed with error codes : {errorCodes}",
+                        OrderRef = response.OrderRef,
+                        Status = OrderStatus.TransactionStartFailed
+                    };
+                }
+
                 return new OrderResponse
                 {
-                    OrderRef = finishRequest.OrderRef,
+                    OrderRef = response.OrderRef,
                     Status = OrderStatus.SuccessfulTwoStepFinish
                 };
             }

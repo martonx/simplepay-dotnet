@@ -37,7 +37,7 @@ namespace SimplePayment.Common.Models
             OrderRef = orderDetailsInput.OrderRef;
             Currency = orderDetailsInput.Currency.CurrencyText;
             CustomerEmail = orderDetailsInput.CustomerEmail;
-            Language = orderDetailsInput.Language;
+            Language = orderDetailsInput.Language.LanguageText;
             Methods = new string[orderDetailsInput.Methods.Length];
             for (int i = 0; i < orderDetailsInput.Methods.Length; i++)
             {
