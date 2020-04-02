@@ -6,7 +6,7 @@
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <!-- nuget related properties -->
-    <Version>1.0.1</Version>
+    <Version>1.0.2</Version>
     <Authors>Lajos Marton,Adorjan Sari,Florian Marton</Authors>
     <Description>SimplePay .Net Core SDK</Description>
     <Copyright>Copyright 2020 © Marton Lajos. All rights reserved.</Copyright>
