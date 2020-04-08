@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SimplePayment.Common.Enums;
-
-namespace SimplePayment.Common.Models
+﻿namespace SimplePayment.Common.Models
 {
     public class IPNProcessResult
     {

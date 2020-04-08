@@ -42,5 +42,16 @@ namespace SimplePayment.Test
             var salt = helper.GenerateSalt();
             Assert.AreEqual(32,salt.Length);
         }
+
+        [Test]
+        public async Task IpnCallbackSignatureHandledCorrectlyWorkingTest()
+        {
+            var helper = new AuthenticationHelper();
+            var secretKey = "D5HrF1fyQ1joLmNO0yRS4m498iZyf32m";
+            var signature = "6u2xMr8bDWXfXinNqP0Nu6fndcrEpSUHHM8B7wuOB8U8CehcX65DjHJgZO3XsH6e";
+            var message = "{\"salt\":\"0XTzyPrD0P7leRv4TtIef4n3tWhsFDhO\",\"orderRef\":\"traveller-138\",\"method\":\"CARD\",\"merchant\":\"S002203\",\"finishDate\":\"2020-04-07T21:42:14+02:00\",\"paymentDate\":\"2020-04-07T21:42:14+02:00\",\"transactionId\":10253948,\"status\":\"AUTHORIZED\"}";
+            var result = helper.IsMessageValid(secretKey, message, signature);
+            Assert.IsTrue(result);
+        }
     }
 }

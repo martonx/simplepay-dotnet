@@ -12,7 +12,7 @@ namespace SimplePayment.Common.Enums
         NotAuthorized = 4,
         InPayment = 5,
         InFraud = 6,
-        Authorized = 7, 
+        AUTHORIZED = 7, 
         Fraud = 8,
         Reversed = 9,
         Refund = 10,

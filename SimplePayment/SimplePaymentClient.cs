@@ -91,27 +91,23 @@ namespace SimplePayment
                 return result;
             }
 
-            switch (ipnResponse.Status.ToLower())
+            result.IsSuccessful = ipnResponse.Status == PaymentStatus.Finished || ipnResponse.Status == PaymentStatus.AUTHORIZED;
+            switch (ipnResponse.Status)
             {
-                case "finished":
-                case "authorized":
-                    result.IsSuccessful = true;
+                case PaymentStatus.Finished:
+                case PaymentStatus.AUTHORIZED:
                     break;
-                case "cancelled":
-                    result.IsSuccessful = false;
+                case PaymentStatus.Cancelled:
                     result.ErrorMessage = $"Payment was cancelled";
                     break;
-                case "timeout":
-                    result.IsSuccessful = false;
+                case PaymentStatus.Timeout:
                     result.ErrorMessage = $"Payment timeout reached";
                     break;
-                case "fraud":
-                case "infraud":
-                    result.IsSuccessful = false;
+                case PaymentStatus.Fraud:
+                case PaymentStatus.InFraud:
                     result.ErrorMessage = $"Fraud detection uncovered possible issue with card";
                     break;
                 default:
-                    result.IsSuccessful = false;
                     result.ErrorMessage = $"IPN failed with status {ipnResponse.Status}";
                     break;
                 

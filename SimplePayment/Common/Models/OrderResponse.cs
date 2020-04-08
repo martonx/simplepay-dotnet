@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SimplePayment.Common.Enums;
+﻿using SimplePayment.Common.Enums;
 
 namespace SimplePayment.Common.Models
 {
