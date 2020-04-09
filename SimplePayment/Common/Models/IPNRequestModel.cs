@@ -6,6 +6,6 @@ namespace SimplePayment.Common.Models
     public class IPNRequestModel : IPNModel
     {
         [JsonPropertyName("receiveDate")]
-        public DateTime ReceiveDate { get; set; }
+        public DateTime? ReceiveDate { get; set; }
     }
 }

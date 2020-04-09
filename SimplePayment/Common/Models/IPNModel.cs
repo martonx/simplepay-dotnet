@@ -9,17 +9,17 @@ namespace SimplePayment.Common.Models
         public string Salt { get; set; }
         [JsonName("orderRef")]
         public string OrderRef { get; set; }
-        [JsonName("Method")]
+        [JsonName("method")]
         public string Method { get; set; }
-        [JsonName("Merchant")]
+        [JsonName("merchant")]
         public string Merchant { get; set; }
-        [JsonName("FinishDate")]
+        [JsonName("finishDate")]
         public DateTime FinishDate { get; set; }
-        [JsonName("PaymentDate")]
+        [JsonName("paymentDate")]
         public DateTime PaymentDate { get; set; }
-        [JsonName("TransactionId")]
+        [JsonName("transactionId")]
         public int TransactionId { get; set; }
-        [JsonName("Status")]
+        [JsonName("status")]
         public Enums.PaymentStatus Status { get; set; }
     }
 }

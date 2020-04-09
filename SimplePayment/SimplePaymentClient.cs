@@ -76,13 +76,11 @@ namespace SimplePayment
             return _simplePaymentService.ValidatePaymentResponse(response, signature);
         }
 
-        public IPNProcessResult HandleIPNResponse(IPNRequestModel ipnResponse, string signature)
+        public IPNProcessResult HandleIPNResponse(IPNRequestModel model, string signature)
         {
-            var result = new IPNProcessResult();
-            var ipnModel = JsonSerializer.Deserialize<IPNModel>(JsonSerializer.Serialize(ipnResponse));
-            var isValidSignature = _authenticationHelper.IsMessageValid(_simplePaymentSettings.SecretKey,
-                JsonSerializer.Serialize(ipnModel),
-                signature);
+            var result = new IPNProcessResult { IPNRequestModel = model };
+            var ipnResponseString = JsonSerializer.Serialize(model, new JsonSerializerOptions { IgnoreNullValues = true });
+            var isValidSignature = _authenticationHelper.IsMessageValid(_simplePaymentSettings.SecretKey, ipnResponseString, signature);
 
             if (!isValidSignature)
             {
@@ -91,8 +89,9 @@ namespace SimplePayment
                 return result;
             }
 
-            result.IsSuccessful = ipnResponse.Status == PaymentStatus.Finished || ipnResponse.Status == PaymentStatus.AUTHORIZED;
-            switch (ipnResponse.Status)
+            model.ReceiveDate = DateTime.Now;
+            result.IsSuccessful = model.Status == PaymentStatus.Finished || model.Status == PaymentStatus.AUTHORIZED;
+            switch (model.Status)
             {
                 case PaymentStatus.Finished:
                 case PaymentStatus.AUTHORIZED:
@@ -108,7 +107,7 @@ namespace SimplePayment
                     result.ErrorMessage = $"Fraud detection uncovered possible issue with card";
                     break;
                 default:
-                    result.ErrorMessage = $"IPN failed with status {ipnResponse.Status}";
+                    result.ErrorMessage = $"IPN failed with status {model.Status}";
                     break;
                 
             }
@@ -116,7 +115,7 @@ namespace SimplePayment
             if (result.IsSuccessful)
             {
                 result.Signature =
-                    _authenticationHelper.HMACSHA384Encode(_simplePaymentSettings.SecretKey, JsonSerializer.Serialize(ipnResponse));
+                    _authenticationHelper.HMACSHA384Encode(_simplePaymentSettings.SecretKey, JsonSerializer.Serialize(model));
             }
 
             return result;
