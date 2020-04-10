@@ -87,7 +87,7 @@ namespace SimplePayment.Test
         public void IPNResponseShouldFailTest()
         {
             var model = GenerateIPNModel();
-            model.Status = PaymentStatus.Cancelled;
+            model.Status = PaymentStatus.CANCELLED;
             var ipnString = JsonSerializer.Serialize(model);
             var hash = authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", ipnString);
             var requestModel = JsonSerializer.Deserialize<IPNRequestModel>(JsonSerializer.Serialize(model));
@@ -106,7 +106,7 @@ namespace SimplePayment.Test
                 PaymentDate = DateTime.Now,
                 OrderRef = new Random().Next(100000, 900000).ToString(),
                 Salt = authenticationHelper.GenerateSalt(),
-                Status = PaymentStatus.Finished,
+                Status = PaymentStatus.FINISHED,
                 TransactionId = new Random().Next(100000, 900000)
             };
         }

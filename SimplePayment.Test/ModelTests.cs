@@ -53,7 +53,7 @@ namespace SimplePayment.Test
             Assert.AreEqual(IPN.FinishDate, DateTime.Parse("2018-09-07T20:46:18+0200"));
             Assert.AreEqual(IPN.PaymentDate, DateTime.Parse("2018-09-07T20:41:13+0200"));
             Assert.AreEqual(IPN.TransactionId, 99310118);
-            Assert.AreEqual(IPN.Status, PaymentStatus.Finished);
+            Assert.AreEqual(IPN.Status, PaymentStatus.FINISHED);
 
         }
 

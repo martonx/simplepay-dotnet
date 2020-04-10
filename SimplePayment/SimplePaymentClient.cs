@@ -78,9 +78,11 @@ namespace SimplePayment
 
         public IPNProcessResult HandleIPNResponse(IPNRequestModel model, string signature)
         {
-            var result = new IPNProcessResult { IPNRequestModel = model };
-            var ipnResponseString = JsonSerializer.Serialize(model, new JsonSerializerOptions { IgnoreNullValues = true });
-            var isValidSignature = _authenticationHelper.IsMessageValid(_simplePaymentSettings.SecretKey, ipnResponseString, signature);
+            var result = new IPNProcessResult();
+            var ipnModel = JsonSerializer.Deserialize<IPNModel>(JsonSerializer.Serialize(model));
+            var isValidSignature = _authenticationHelper.IsMessageValid(_simplePaymentSettings.SecretKey,
+                JsonSerializer.Serialize(ipnModel),
+                signature);
 
             if (!isValidSignature)
             {
@@ -90,26 +92,25 @@ namespace SimplePayment
             }
 
             model.ReceiveDate = DateTime.Now;
-            result.IsSuccessful = model.Status == PaymentStatus.Finished || model.Status == PaymentStatus.AUTHORIZED;
+            result.IsSuccessful = model.Status == PaymentStatus.FINISHED || model.Status == PaymentStatus.AUTHORIZED;
             switch (model.Status)
             {
-                case PaymentStatus.Finished:
+                case PaymentStatus.FINISHED:
                 case PaymentStatus.AUTHORIZED:
                     break;
-                case PaymentStatus.Cancelled:
+                case PaymentStatus.CANCELLED:
                     result.ErrorMessage = $"Payment was cancelled";
                     break;
-                case PaymentStatus.Timeout:
+                case PaymentStatus.TIMEOUT:
                     result.ErrorMessage = $"Payment timeout reached";
                     break;
-                case PaymentStatus.Fraud:
-                case PaymentStatus.InFraud:
+                case PaymentStatus.FRAUD:
+                case PaymentStatus.INFRAUD:
                     result.ErrorMessage = $"Fraud detection uncovered possible issue with card";
                     break;
                 default:
                     result.ErrorMessage = $"IPN failed with status {model.Status}";
                     break;
-                
             }
 
             if (result.IsSuccessful)

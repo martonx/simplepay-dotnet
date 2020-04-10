@@ -6,16 +6,16 @@ namespace SimplePayment.Common.Enums
     [JsonConverter(typeof(JsonStringEnumConverter))]
     public enum PaymentStatus
     {
-        Init = 1,
-        Timeout = 2,
-        Cancelled = 3,
-        NotAuthorized = 4,
-        InPayment = 5,
-        InFraud = 6,
+        INIT = 1,
+        TIMEOUT = 2,
+        CANCELLED = 3,
+        NOTAUTHORIZED = 4,
+        INPAYMENT = 5,
+        INFRAUD = 6,
         AUTHORIZED = 7, 
-        Fraud = 8,
-        Reversed = 9,
-        Refund = 10,
-        Finished = 11
+        FRAUD = 8,
+        REVERSED = 9,
+        REFUND = 10,
+        FINISHED = 11
     }
 }
