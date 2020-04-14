@@ -133,7 +133,8 @@ namespace SimplePayment
                 OriginalTotal = finishRequestInput.OriginalTotal,
                 Salt = _authenticationHelper.GenerateSalt(),
                 SDKVersion = typeof(OrderDetails).Assembly
-                    .GetCustomAttribute<AssemblyFileVersionAttribute>().Version
+                    .GetCustomAttribute<AssemblyFileVersionAttribute>().Version,
+                TransactionId = finishRequestInput.TransactionId.ToString()
             };
 
             try

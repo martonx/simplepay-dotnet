@@ -95,6 +95,14 @@ namespace SimplePayment.Test
         }
 
         [Test]
+        public void TestFinalResponseModelCorrectDecimalDeserialize()
+        {
+            var json = ReadJson("FinishRequestInput");
+            var result = JsonSerializer.Deserialize<FinishResponse>(json, JsonOptions.CustomJsonOptions());
+            Assert.AreEqual(1.01,result.ApproveTotal);
+        }
+
+        [Test]
         public void TestOrderItemModel()
         {
             var orderItemJson = ReadJson("OrderItem");

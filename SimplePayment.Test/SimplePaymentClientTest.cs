@@ -11,11 +11,13 @@ namespace SimplePayment.Test
     {
         private SimplePaymentClient _paymentClient;
         private AuthenticationHelper authenticationHelper;
+        private SimplePaymentSettings settings;
+
         [SetUp]
         public void Init()
         {
             // Public test credentials
-            var settings = new SimplePaymentSettings { IsTestEnvironment = true, Merchant = "PUBLICTESTHUF", SecretKey = "FxDa5w314kLlNseq2sKuVwaqZshZT5d6" };
+            settings = new SimplePaymentSettings { IsTestEnvironment = true, Merchant = "PUBLICTESTHUF", SecretKey = "FxDa5w314kLlNseq2sKuVwaqZshZT5d6" };
             _paymentClient = new SimplePaymentClient(settings);
             authenticationHelper = new AuthenticationHelper();
         }
@@ -74,12 +76,12 @@ namespace SimplePayment.Test
         {
             var model = GenerateIPNModel();
             var ipnString = JsonSerializer.Serialize(model);
-            var hash = authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", ipnString);
+            var hash = authenticationHelper.HMACSHA384Encode(settings.SecretKey, ipnString);
             var requestModel = JsonSerializer.Deserialize<IPNRequestModel>(JsonSerializer.Serialize(model));
             requestModel.ReceiveDate = DateTime.Now;
             var ipnResult = _paymentClient.HandleIPNResponse(requestModel, hash);
             Assert.IsTrue(ipnResult.IsSuccessful);
-            var resultSignatureExpected = authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", JsonSerializer.Serialize(requestModel));
+            var resultSignatureExpected = authenticationHelper.HMACSHA384Encode(settings.SecretKey, JsonSerializer.Serialize(requestModel));
             Assert.AreEqual(resultSignatureExpected, ipnResult.Signature);
         }
 
@@ -89,11 +91,31 @@ namespace SimplePayment.Test
             var model = GenerateIPNModel();
             model.Status = PaymentStatus.CANCELLED;
             var ipnString = JsonSerializer.Serialize(model);
-            var hash = authenticationHelper.HMACSHA384Encode("FxDa5w314kLlNseq2sKuVwaqZshZT5d6", ipnString);
+            var hash = authenticationHelper.HMACSHA384Encode(settings.SecretKey, ipnString);
             var requestModel = JsonSerializer.Deserialize<IPNRequestModel>(JsonSerializer.Serialize(model));
             requestModel.ReceiveDate = DateTime.Now;
             var ipnResult = _paymentClient.HandleIPNResponse(requestModel, hash);
             Assert.IsFalse(ipnResult.IsSuccessful);
+        }
+
+        [Test]
+        public async Task FinalizeTest()
+        {
+            var order = GenerateOrderDetails();
+            var result = await _paymentClient.StartTransaction(order);
+            Assert.AreEqual(result.Status, OrderStatus.TransactionStartSuccess);
+            Assert.True(!string.IsNullOrEmpty(result.PaymentUrl));
+
+            var finishResult = await _paymentClient.FinishTwoStepTransaction(new FinishRequestInput()
+            {
+                ApproveTotal = order.Total,
+                OriginalTotal = order.Total,
+                Currency = Currency.HUF,
+                OrderRef = order.OrderRef,
+                TransactionId = result.TransactionId
+            });
+
+            Assert.True(finishResult.Error.Contains("5022"));
         }
 
         private IPNModel GenerateIPNModel()
@@ -104,7 +126,7 @@ namespace SimplePayment.Test
                 Merchant = "PUBLICTESTHUF",
                 Method = "CARD",
                 PaymentDate = DateTime.Now,
-                OrderRef = new Random().Next(100000, 900000).ToString(),
+                OrderRef = $"traveller-{new Random().Next(100000, 900000).ToString()}",
                 Salt = authenticationHelper.GenerateSalt(),
                 Status = PaymentStatus.FINISHED,
                 TransactionId = new Random().Next(100000, 900000)

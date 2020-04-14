@@ -24,6 +24,9 @@
     <None Update="TestJsonFiles\BillingDetailsJson.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="TestJsonFiles\FinishRequestInputJson.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="TestJsonFiles\IPNJson.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

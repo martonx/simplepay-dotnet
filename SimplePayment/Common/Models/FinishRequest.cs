@@ -9,5 +9,6 @@
         public string ApproveTotal { get; set; }
         public string Currency { get; set; }
         public string SDKVersion { get; set; }
+        public string TransactionId { get; set; }
     }
 }
