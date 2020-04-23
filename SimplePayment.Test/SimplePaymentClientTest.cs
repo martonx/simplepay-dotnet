@@ -167,6 +167,13 @@ namespace SimplePayment.Test
                 Total = "1",
                 Timeout = DateTimeOffset.Now.AddMinutes(10),
                 Url = "https://sdk.simplepay.hu/back.php",
+                Urls = new RedirectUrls() 
+                { 
+                    Fail = "https://sdk.simplepay.hu/fail.php",
+                    Success = "https://sdk.simplepay.hu/back.php",
+                    Timeout = "https://sdk.simplepay.hu/timeout.php",
+                    Cancel = "https://sdk.simplepay.hu/cancel.php"
+                }
             };
         }
     }

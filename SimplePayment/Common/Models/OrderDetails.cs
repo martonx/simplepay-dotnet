@@ -21,6 +21,7 @@ namespace SimplePayment.Common.Models
         public string Total { get; set; }
         public string Timeout { get; set; }
         public string Url { get; set; }
+        public RedirectUrls? Urls { get; set; }
         public bool? TwoStep { get; set; }
         public BillingDetails Invoice { get; set; }
         public OrderItem[] OrderItems { get; set; }
@@ -52,6 +53,13 @@ namespace SimplePayment.Common.Models
             Total = orderDetailsInput.Total;
             Timeout = orderDetailsInput.Timeout.ToString("yyyy-MM-ddTHH:mm:ssK");
             Url = orderDetailsInput.Url;
+            Urls = new RedirectUrls()
+            { 
+                Success = orderDetailsInput.Urls.Success,
+                Cancel = orderDetailsInput.Urls.Cancel,
+                Fail = orderDetailsInput.Urls.Fail,
+                Timeout = orderDetailsInput.Urls.Timeout
+            };
             TwoStep = orderDetailsInput.TwoStep;
             Invoice = orderDetailsInput.Invoice;
             OrderItems = orderDetailsInput.OrderItems;
