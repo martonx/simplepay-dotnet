@@ -78,7 +78,7 @@ namespace SimplePayment
 
         public IPNProcessResult HandleIPNResponse(IPNRequestModel model, string signature)
         {
-            var result = new IPNProcessResult();
+            var result = new IPNProcessResult() { IPNRequestModel = model };
             var ipnModel = JsonSerializer.Deserialize<IPNModel>(JsonSerializer.Serialize(model));
             var isValidSignature = _authenticationHelper.IsMessageValid(_simplePaymentSettings.SecretKey,
                 JsonSerializer.Serialize(ipnModel),
