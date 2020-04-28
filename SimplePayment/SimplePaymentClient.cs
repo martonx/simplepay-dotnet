@@ -76,12 +76,22 @@ namespace SimplePayment
             return _simplePaymentService.ValidatePaymentResponse(response, signature);
         }
 
-        public IPNProcessResult HandleIPNResponse(IPNRequestModel model, string signature)
+        public IPNProcessResult HandleIPNResponse(IPNModel model, string signature)
         {
-            var result = new IPNProcessResult() { IPNRequestModel = model };
-            var ipnModel = JsonSerializer.Deserialize<IPNModel>(JsonSerializer.Serialize(model));
+            var result = new IPNProcessResult() { IpnResponseModel = new IPNResponseModel()
+            {
+                FinishDate = model.FinishDate,
+                Merchant = model.Merchant,
+                Method = model.Method,
+                OrderRef = model.OrderRef,
+                PaymentDate = model.PaymentDate,
+                Salt = model.Salt,
+                Status = model.Status,
+                TransactionId = model.TransactionId
+            } };
+
             var isValidSignature = _authenticationHelper.IsMessageValid(_simplePaymentSettings.SecretKey,
-                JsonSerializer.Serialize(ipnModel),
+                JsonSerializer.Serialize(model),
                 signature);
 
             if (!isValidSignature)
@@ -91,7 +101,7 @@ namespace SimplePayment
                 return result;
             }
 
-            model.ReceiveDate = DateTime.Now;
+            result.IpnResponseModel.ReceiveDate = DateTime.Now;
             result.IsSuccessful = model.Status == PaymentStatus.FINISHED || model.Status == PaymentStatus.AUTHORIZED;
             switch (model.Status)
             {
@@ -116,7 +126,7 @@ namespace SimplePayment
             if (result.IsSuccessful)
             {
                 result.Signature =
-                    _authenticationHelper.HMACSHA384Encode(_simplePaymentSettings.SecretKey, JsonSerializer.Serialize(model));
+                    _authenticationHelper.HMACSHA384Encode(_simplePaymentSettings.SecretKey, JsonSerializer.Serialize(result.IpnResponseModel));
             }
 
             return result;

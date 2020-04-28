@@ -77,12 +77,9 @@ namespace SimplePayment.Test
             var model = GenerateIPNModel();
             var ipnString = JsonSerializer.Serialize(model);
             var hash = authenticationHelper.HMACSHA384Encode(settings.SecretKey, ipnString);
-            var requestModel = JsonSerializer.Deserialize<IPNRequestModel>(JsonSerializer.Serialize(model));
-            requestModel.ReceiveDate = DateTime.Now;
+            var requestModel = JsonSerializer.Deserialize<IPNModel>(JsonSerializer.Serialize(model));
             var ipnResult = _paymentClient.HandleIPNResponse(requestModel, hash);
             Assert.IsTrue(ipnResult.IsSuccessful);
-            var resultSignatureExpected = authenticationHelper.HMACSHA384Encode(settings.SecretKey, JsonSerializer.Serialize(requestModel));
-            Assert.AreEqual(resultSignatureExpected, ipnResult.Signature);
         }
 
         [Test]
@@ -92,7 +89,7 @@ namespace SimplePayment.Test
             model.Status = PaymentStatus.CANCELLED;
             var ipnString = JsonSerializer.Serialize(model);
             var hash = authenticationHelper.HMACSHA384Encode(settings.SecretKey, ipnString);
-            var requestModel = JsonSerializer.Deserialize<IPNRequestModel>(JsonSerializer.Serialize(model));
+            var requestModel = JsonSerializer.Deserialize<IPNResponseModel>(JsonSerializer.Serialize(model));
             requestModel.ReceiveDate = DateTime.Now;
             var ipnResult = _paymentClient.HandleIPNResponse(requestModel, hash);
             Assert.IsFalse(ipnResult.IsSuccessful);
