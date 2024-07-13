@@ -1,140 +1,124 @@
-using SimplePayment.Common.Models;
-using NUnit.Framework;
-using System.Text.RegularExpressions;
-using System.IO;
-using System;
-using SimplePayment.Common.Enums;
-using System.Text.Json;
-using JsonOptions = SimplePayment.Helpers.CustomJsonConverter;
+namespace SimplePayment.Test;
 
-namespace SimplePayment.Test
+public class Tests
 {
-    public class Tests
+    private readonly JsonSerializerOptions customJsonOptions = new JsonSerializerOptions {
+        PropertyNameCaseInsensitive = true,
+        WriteIndented = true,
+        Converters =
+        {
+            new CustomJsonConverter.DateTimeConverter(),
+            new CustomJsonConverter.IntToStringConverter(),
+            new CustomJsonConverter.LongToStringConverter()
+        }
+    };
+
+    [Test]
+    public void TestBillingDetailModel()
     {
-        private readonly JsonSerializerOptions customJsonOptions = new JsonSerializerOptions {
-            PropertyNameCaseInsensitive = true,
-            WriteIndented = true,
-            Converters =
-            {
-                new JsonOptions.DateTimeConverter(),
-                new JsonOptions.IntToStringConverter(),
-                new JsonOptions.LongToStringConverter()
-            }
-        };
+        var billingDetailsJson = ReadJson("BillingDetails");
+        var billingDetails = JsonSerializer.Deserialize<BillingDetails>(billingDetailsJson, customJsonOptions);
 
-        [Test]
-        public void TestBillingDetailModel()
-        {
-            var billingDetailsJson = ReadJson("BillingDetails");
-            var billingDetails = JsonSerializer.Deserialize<BillingDetails>(billingDetailsJson, customJsonOptions);
-            var billingDetailsSerialized = JsonSerializer.Serialize(billingDetails);
+        Assert.That(billingDetails.Name, Is.EqualTo("Teszt Béla"));
+        Assert.That(billingDetails.Company, Is.EqualTo("Teszt Kft."));
+        Assert.That(billingDetails.Country, Is.EqualTo("Magyarország"));
+        Assert.That(billingDetails.City, Is.EqualTo("Szeged"));
+        Assert.That(billingDetails.State, Is.EqualTo("Csongrád"));
+        Assert.That(billingDetails.Zip, Is.EqualTo("6722"));
+        Assert.That(billingDetails.Address, Is.EqualTo("Teszt utca 7."));
+        Assert.That(billingDetails.Address2, Is.EqualTo("2 / 3"));
+        Assert.That(billingDetails.Phone, Is.EqualTo("36701234567"));
+    }
 
-            Assert.AreEqual(billingDetails.Name, "Teszt Béla");
-            Assert.AreEqual(billingDetails.Company, "Teszt Kft.");
-            Assert.AreEqual(billingDetails.Country, "Magyarország");
-            Assert.AreEqual(billingDetails.City, "Szeged");
-            Assert.AreEqual(billingDetails.State, "Csongrád");
-            Assert.AreEqual(billingDetails.Zip, "6722");
-            Assert.AreEqual(billingDetails.Address, "Teszt utca 7.");
-            Assert.AreEqual(billingDetails.Address2, "2 / 3");
-            Assert.AreEqual(billingDetails.Phone, "36701234567");
-        }
+    [Test]
+    public void TestIPNModel()
+    {
+        var IPNJson = ReadJson("IPN");
+        var IPN = JsonSerializer.Deserialize<IPNModel>(IPNJson, customJsonOptions); 
 
-        [Test]
-        public void TestIPNModel()
-        {
-            var IPNJson = ReadJson("IPN");
-            var IPN = JsonSerializer.Deserialize<IPNModel>(IPNJson, customJsonOptions); 
+        Assert.That(IPN.Salt, Is.EqualTo("223G0O18VAqdLhQYbJz73adT36YzLtak"));
+        Assert.That(IPN.OrderRef, Is.EqualTo("101010515363456734591"));
+        Assert.That(IPN.Method, Is.EqualTo("CARD"));
+        Assert.That(IPN.Merchant, Is.EqualTo("PUBLICTESTHUF"));
+        Assert.That(IPN.FinishDate, Is.EqualTo(DateTime.Parse("2018-09-07T20:46:18+0200")));
+        Assert.That(IPN.PaymentDate, Is.EqualTo(DateTime.Parse("2018-09-07T20:41:13+0200")));
+        Assert.That(IPN.TransactionId, Is.EqualTo(99310118));
+        Assert.That(IPN.Status, Is.EqualTo(PaymentStatus.FINISHED));
 
-            Assert.AreEqual(IPN.Salt, "223G0O18VAqdLhQYbJz73adT36YzLtak");
-            Assert.AreEqual(IPN.OrderRef, "101010515363456734591");
-            Assert.AreEqual(IPN.Method, "CARD");
-            Assert.AreEqual(IPN.Merchant, "PUBLICTESTHUF");
-            Assert.AreEqual(IPN.FinishDate, DateTime.Parse("2018-09-07T20:46:18+0200"));
-            Assert.AreEqual(IPN.PaymentDate, DateTime.Parse("2018-09-07T20:41:13+0200"));
-            Assert.AreEqual(IPN.TransactionId, 99310118);
-            Assert.AreEqual(IPN.Status, PaymentStatus.FINISHED);
+    }
 
-        }
+    [Test]
+    public void TestPaymentResponseModel()
+    {
+        var paymentResponseJson = ReadJson("PaymentResponse");
+        var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(paymentResponseJson, customJsonOptions);
 
-        [Test]
-        public void TestPaymentResponseModel()
-        {
-            var paymentResponseJson = ReadJson("PaymentResponse");
-            var paymentResponse = JsonSerializer.Deserialize<PaymentResponse>(paymentResponseJson, customJsonOptions);
-            var paymentResponseSerialized = JsonSerializer.Serialize(paymentResponse);
+        Assert.That(paymentResponse.ResponseCode, Is.EqualTo(0));
+        Assert.That(paymentResponse.TransactionId, Is.EqualTo(99310118));
+        Assert.That(paymentResponse.Event, Is.EqualTo("SUCCESS"));
+        Assert.That(paymentResponse.Merchant, Is.EqualTo("PUBLICTESTHUF"));
+        Assert.That(paymentResponse.OrderId, Is.EqualTo("101010515363456734591"));
+    }
 
-            Assert.AreEqual(paymentResponse.ResponseCode, 0);
-            Assert.AreEqual(paymentResponse.TransactionId, 99310118);
-            Assert.AreEqual(paymentResponse.Event, "SUCCESS");
-            Assert.AreEqual(paymentResponse.Merchant, "PUBLICTESTHUF");
-            Assert.AreEqual(paymentResponse.OrderId, "101010515363456734591");
-        }
+    [Test]
+    public void TestOrderDetailsModel()
+    {
+        var orderDetailsJson = ReadJson("OrderDetails");
+        var orderDetails = JsonSerializer.Deserialize<OrderDetails>(orderDetailsJson, customJsonOptions);
 
-        [Test]
-        public void TestOrderDetailsModel()
-        {
-            var orderDetailsJson = ReadJson("OrderDetails");
-            var orderDetails = JsonSerializer.Deserialize<OrderDetails>(orderDetailsJson, customJsonOptions);
-            var orderDetailsSerialized = JsonSerializer.Serialize(orderDetails);
+        Assert.That(orderDetails.Merchant, Is.EqualTo("PUBLICTESTHUF"));
+        Assert.That(orderDetails.OrderRef, Is.EqualTo("101010515363456734591"));
+        Assert.That(orderDetails.CustomerEmail, Is.EqualTo("sdk_test@otpmobil.com"));
+        Assert.That(orderDetails.Language, Is.EqualTo("HU"));
+        Assert.That(orderDetails.Currency, Is.EqualTo("HUF"));
+        Assert.That(orderDetails.Total, Is.EqualTo("100"));
+        Assert.That(orderDetails.TwoStep, Is.EqualTo(true));
+        Assert.That(orderDetails.Salt, Is.EqualTo("d471d2fb24c5a395563ff60f8ba769d1"));
+        Assert.That(orderDetails.Methods[0], Is.EqualTo("CARD"));
+        Assert.That(orderDetails.Invoice.ToString(), Is.EqualTo(JsonSerializer.Deserialize<BillingDetails>(ReadJson("BillingDetails")).ToString()));
+        Assert.That(orderDetails.Timeout, Is.EqualTo("2018-09-07T20:51:13+00:00"));
+        Assert.That(orderDetails.Url, Is.EqualTo("http://simplepaytestshop.hu/back.php"));
+        Assert.That(orderDetails.SDKVersion, Is.EqualTo("SimplePay_PHP_SDK_2.0_180906"));
+        Assert.That(orderDetails.OrderItems[0].ToString(), Is.EqualTo(JsonSerializer.Deserialize<OrderItem>(ReadJson("OrderItem")).ToString()));
+    }
 
-            Assert.AreEqual(orderDetails.Merchant, "PUBLICTESTHUF");
-            Assert.AreEqual(orderDetails.OrderRef, "101010515363456734591");
-            Assert.AreEqual(orderDetails.CustomerEmail, "sdk_test@otpmobil.com");
-            Assert.AreEqual(orderDetails.Language, "HU");
-            Assert.AreEqual(orderDetails.Currency, "HUF");
-            Assert.AreEqual(orderDetails.Total, "100");
-            Assert.AreEqual(orderDetails.TwoStep, true);
-            Assert.AreEqual(orderDetails.Salt, "d471d2fb24c5a395563ff60f8ba769d1");
-            Assert.AreEqual(orderDetails.Methods[0], "CARD");
-            Assert.AreEqual(orderDetails.Invoice.ToString(), JsonSerializer.Deserialize<BillingDetails>(ReadJson("BillingDetails")).ToString());
-            Assert.AreEqual(orderDetails.Timeout, "2018-09-07T20:51:13+00:00");
-            Assert.AreEqual(orderDetails.Url, "http://simplepaytestshop.hu/back.php");
-            Assert.AreEqual(orderDetails.SDKVersion, "SimplePay_PHP_SDK_2.0_180906");
-            Assert.AreEqual(orderDetails.OrderItems[0].ToString(), JsonSerializer.Deserialize<OrderItem>(ReadJson("OrderItem")).ToString());
-        }
+    [Test]
+    public void TestFinalResponseModelCorrectDecimalDeserialize()
+    {
+        var json = ReadJson("FinishRequestInput");
+        var result = JsonSerializer.Deserialize<FinishResponse>(json, CustomJsonConverter.CustomJsonOptions());
+        Assert.That(result.ApproveTotal, Is.EqualTo(1.01));
+    }
 
-        [Test]
-        public void TestFinalResponseModelCorrectDecimalDeserialize()
-        {
-            var json = ReadJson("FinishRequestInput");
-            var result = JsonSerializer.Deserialize<FinishResponse>(json, JsonOptions.CustomJsonOptions());
-            Assert.AreEqual(1.01,result.ApproveTotal);
-        }
+    [Test]
+    public void TestOrderItemModel()
+    {
+        var orderItemJson = ReadJson("OrderItem");
+        var orderItem = JsonSerializer.Deserialize<OrderItem>(orderItemJson, customJsonOptions);
 
-        [Test]
-        public void TestOrderItemModel()
-        {
-            var orderItemJson = ReadJson("OrderItem");
-            var orderItem = JsonSerializer.Deserialize<OrderItem>(orderItemJson, customJsonOptions);
-            var orderItemSerialized = JsonSerializer.Serialize(orderItem);
+        Assert.That(orderItem.Ref, Is.EqualTo("Nagy Usa Körút"));
+        Assert.That(orderItem.Title, Is.EqualTo("szép út"));
+        Assert.That(orderItem.Description, Is.EqualTo("nagyon szép"));
+        Assert.That(orderItem.Amount, Is.EqualTo(1));
+        Assert.That(orderItem.Price, Is.EqualTo(959000));
+        Assert.That(orderItem.Tax, Is.EqualTo(210000));
+    }
 
-            Assert.AreEqual(orderItem.Ref, "Nagy Usa Körút");
-            Assert.AreEqual(orderItem.Title, "szép út");
-            Assert.AreEqual(orderItem.Description, "nagyon szép");
-            Assert.AreEqual(orderItem.Amount, 1);
-            Assert.AreEqual(orderItem.Price, 959000);
-            Assert.AreEqual(orderItem.Tax, 210000);
-        }
+    [Test]
+    public void TestTransactionResponse()
+    {
+        var json = ReadJson("TransactionResponse");
+        var response = JsonSerializer.Deserialize<TransactionResponse>(json, customJsonOptions);
+        Assert.That(response.PaymentUrl, Is.Not.Null);
+    }
 
-        [Test]
-        public void TestTransactionResponse()
-        {
-            var json = ReadJson("TransactionResponse");
-            var response = JsonSerializer.Deserialize<TransactionResponse>(json, customJsonOptions);
-            Assert.IsNotNull(response.PaymentUrl);
-        }
+    private string RemoveWhiteSpace(string json) => 
+        Regex.Replace(json, @"(""[^""\\]*(?:\\.[^""\\]*)*"")|\s+", "$1");
 
-        private string RemoveWhiteSpace(string json)
-        {
-            return Regex.Replace(json, @"(""[^""\\]*(?:\\.[^""\\]*)*"")|\s+", "$1");
-        }
+    private string ReadJson(string jsonFile)
+    {
+        var jsonResult = File.ReadAllText($@"TestJsonFiles/{jsonFile}Json.json");
 
-        private string ReadJson(string jsonFile)
-        {
-            var jsonResult = File.ReadAllText($@"TestJsonFiles/{jsonFile}Json.json");
-
-            return RemoveWhiteSpace(jsonResult);
-        }
+        return RemoveWhiteSpace(jsonResult);
     }
 }
