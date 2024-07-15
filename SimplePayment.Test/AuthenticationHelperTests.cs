@@ -3,14 +3,17 @@
 public class AuthenticationHelperTests
 {
     private readonly JsonSerializerOptions options = new JsonSerializerOptions {
-        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull, PropertyNamingPolicy = JsonNamingPolicy.CamelCase };
+        DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull,
+        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+        Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+    };
 
     [Test]
     public async Task MatchExampleStringWithSerializedJsonTest()
     {
         var expectedMessage = await File.ReadAllTextAsync("TestJsonFiles/Message.txt");
         var res = JsonSerializer.Deserialize<OrderDetails>(
-            await File.ReadAllTextAsync("TestJsonFiles/AuthOrderDetails.json"));
+            await File.ReadAllTextAsync("TestJsonFiles/AuthOrderDetails.json"), options);
         var message = JsonSerializer.Serialize(res, options);
         Assert.That(expectedMessage, Is.EqualTo(message));
     }
@@ -18,9 +21,10 @@ public class AuthenticationHelperTests
     [Test]
     public async Task HMACSHA384EncodeCorrectlyWorkingTest()
     {
-        var res = JsonSerializer.Deserialize<OrderDetails>(await File.ReadAllTextAsync("TestJsonFiles/AuthOrderDetails.json"));
+        var res = JsonSerializer.Deserialize<OrderDetails>(await File.ReadAllTextAsync("TestJsonFiles/AuthOrderDetails.json"), options);
         var message = JsonSerializer.Serialize(res, options);
         message = message.Replace("/", @"\/");
+        message = message.Replace("\u002B", "+");
         var helper = new AuthenticationHelper();
         var merchantKey = "FxDa5w314kLlNseq2sKuVwaqZshZT5d6";
         var signature = helper.HMACSHA384Encode(merchantKey, message);

@@ -6,6 +6,7 @@ global using SimplePayment.Helpers;
 
 global using System;
 global using System.IO;
+global using System.Text.Encodings.Web;
 global using System.Text.Json;
 global using System.Text.Json.Serialization;
 global using System.Text.RegularExpressions;

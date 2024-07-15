@@ -40,7 +40,7 @@ public class SimplePaymentClientTest
         order.OrderRef = "1";
         var result = await _paymentClient.StartTransaction(order);
         Assert.That(result.Status, Is.EqualTo(OrderStatus.TransactionStartFailed));
-        Assert.That(result.Error.Contains("5013"), Is.True);
+        Assert.That(result.Error.Contains("5000"), Is.True);
     }
     [Test]
     public async Task HandlePaymentResponseTest()
